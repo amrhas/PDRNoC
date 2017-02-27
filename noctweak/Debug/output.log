@@ -1,0 +1,14 @@
+NoCTweak v1.0 --- Mon Feb 27 03:51:48 2017
+Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis 
+
+===================== CONFIGURATIONS ===================== 
+./noctweak -platform synthetic -reconfig_time1 10 -reconfig_time2 20 -dimx 2 -dimy 1 -fir 0.8 -routing xy -vcd waveform -sim 20000 -router vc 
+==================== SIMULATION DONE! ====================
+=================== PERFORMANCE RESULTS ==================
+Average network latency = 60.747 (cycles) = 0.061 (us) = 60.747 (ns)
+Average network throughput = 0.002 (packets/cycle) = 0.011 (flits/cycle) = 10.886 (flits/us) = 0.011 (flits/ns)
+------------------------------------------------------
+Total number of received packets after warmup = 87
+Simulation stop at cycle = 20000th
+=========== POWER & ENERGY RESULTS (32-bit datapath) ===========
+=========== AT 1.000V, 1000.000MHz =========
