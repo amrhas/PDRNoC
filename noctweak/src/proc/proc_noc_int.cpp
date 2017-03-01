@@ -53,70 +53,21 @@ void proc_noc_interface::tx_process_out_buff() {
 			count_minus[vo].write(0);
 		}
 	} else {	// positive clock edge
-
-		// If we sent a flit to the local router on the previous cycle:
-		// we decrement the number of remaining entry in the buffer of VC 0
-		// and we remove the flit from the local queue
-		//for (int vi=0; vi <RouterParameter::n_VCs; vi++){
-			//if(out_vc_remain[vi].read() == 0)
-				//continue;
 		if (out_vc_remain[0].read() >= 1 && (out_buffer.size() > 0) ) {// if local port of router is not full
 			count_minus[0].write(1);
 			Flit flit_tmp = out_buffer.front();
 			out_buf_out_buffer_rd.write(1);
 			r_valid_out.write(1);
 			r_flit_out.write(flit_tmp);
-			//break;
-			//source_queue.pop();
 		} else {
 			count_minus[0].write(0);
 			out_buf_out_buffer_rd.write(0);
 			r_valid_out.write(0);
 			r_flit_out.write(Flit());
-			//break;
-		}
-		//}
-
-
-	    //if (source_queue.size() > 0) {
-			//queue_out_valid.write(1);
-			//cout << sc_time_stamp() << name() << "Syn current_packet_length = " << endl;
-
-			//Flit flit_tmp = source_queue.front();
-			//flit_tmp.vc_id = 0;
-			//queue_out.write(flit_tmp);
-		//} else {
-			//queue_out_valid.write(0);
-			//queue_out.write(Flit());
-		//}
-	}
-}
-
-/*
- * flit_out
- */
-/*void proc_noc_interface::flit_out_process() {
-	if (reset.read()) {	// if reset
-		r_valid_out.write(0);
-		out_buf_out_buffer_rd.write(0);
-
-	} else {
-
-		if (count_minus[0].read()) {
-			cout << sc_time_stamp() << name() << "Out Syn current_packet_length = " << endl;
-			r_valid_out.write(1);
-			out_buf_out_buffer_rd.write(1);
-
-	//flit_out.write(queue_out.read());
-		} else {
-			r_valid_out.write(0);
-			out_buf_out_buffer_rd.write(0);
-
-		//flit_out.write(Flit());
 		}
 	}
 }
-*/
+
 /*
  * flit receive process
  */
@@ -134,8 +85,7 @@ void proc_noc_interface::in_vc_remain_process() {
 void proc_noc_interface::in_vc_remain_reg_process() {
 	if (reset.read()) {
 		for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-//			out_vc_remain_reg[vo].write(1);
-			in_vc_remain_reg[vo].write(1);
+			in_vc_remain_reg[vo].write((int) RouterParameter::buffer_size);
 		}
 	}
 	 else{
@@ -145,54 +95,26 @@ void proc_noc_interface::in_vc_remain_reg_process() {
 	 }
 }
 
-/*
- * count_plus = out_vc_buffer_rd
- */
-/*void proc_noc_interface::in_count_plus_process() {
-	for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-		in_count_plus[vo].write(p_out_vc_buffer_rd.read());
-	}
-}*/
 
 
 void proc_noc_interface::rx_process_in_buff() {
 	if (reset.read()) {
-//		in_full.write(0);	//never full
-
 		in_buf_out_buffer_rd.write(0);
 		for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
 				in_count_minus[vo].write(0);
 			}
 	} else {	// if positive clk
 		if (p_out_vc_buffer_rd.read() == 1 && in_vc_remain[0].read() > 0 && in_buffer.size() > 1) {
-			//Flit tmp = in_buffer.front();
-			//int vc_id = tmp.vc_id;
-			//cout << ": write to a FULL buffer: " << name() << endl;
-			//p_valid_out.write(1);
-			//p_flit_out.write(tmp);
 			in_count_minus[0].write(1);
-
 			in_buf_out_buffer_rd.write(1);
-
 		}
 		else {
 			in_count_minus[0].write(0);
-
 			in_buf_out_buffer_rd.write(0);
-			//p_valid_out.write(0);
-			//p_flit_out.write(Flit());
-
 		}
 	}
 }
-/*void proc_noc_interface::in_buff_empty_reg_process() {
-	if (reset.read()) {
-		in_buff_empty_reg = 0;
 
-	}else
-in_buff_empty_reg = in_buff_empty;
-
-}*/
 void proc_noc_interface::in_buffer_process() {
 
 	if (reset.read()) {	// if reset
@@ -213,7 +135,6 @@ void proc_noc_interface::in_buffer_process() {
 		for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
 					in_count_plus[vo].write(0);
 				}
-		//out_buffer.write(Flit());
 
 	} else {	// if positive clk edge
 
@@ -222,10 +143,8 @@ void proc_noc_interface::in_buffer_process() {
 		}
 		else
 			in_buffer_full.write(0);
-		//empty.write(buffer.empty());
 
 		int current_time = (int) (sc_time_stamp().to_double() / 1000);
-
 
 		if (r_valid_in.read() && in_buf_out_buffer_rd.read()) {
 
@@ -233,8 +152,6 @@ void proc_noc_interface::in_buffer_process() {
 			if (in_buffer.empty()) {
 				cout << "ERROR: read from an EMPTY in buffer: " << name() << endl;
 						exit(-1);
-				//in_buff_empty.write(1);
-
 			}
 			// remove the first flit from the buffer
 			p_valid_out.write(1);
@@ -274,9 +191,6 @@ void proc_noc_interface::in_buffer_process() {
 		} else if (r_valid_in.read()) {
 
 			if (in_buffer.size() == buffer_size) {
-				//cerr << "ERROR: write to a FULL in buffer: " << name() << endl;
-				//exit(-1);
-				//in_buff_empty.write(1);
 				for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
 					r_in_vc_buffer_rd[vi].write(0);
 				}
@@ -302,9 +216,6 @@ void proc_noc_interface::in_buffer_process() {
 			}
 			p_valid_out.write(0);
 			p_flit_out.write(Flit());
-			//full.write(0);
-			//buffer_out.write(buffer.front());
-
 		} else if (in_buf_out_buffer_rd.read()) {
 			if (in_buffer.empty()) {
 				cerr << "ERROR: read from an EMPTY in buffer: " << name() << endl;				exit(-1);
