@@ -234,7 +234,6 @@ void SyntheticProc::rx_process() {
 			int vc_id = flit_in.read().vc_id;
 			// always read if having flit coming
 
-
 			int current_time = (int) (sc_time_stamp().to_double() / 1000);
 			if (current_time >= CommonParameter::warmup_time) {
 
@@ -252,7 +251,7 @@ void SyntheticProc::rx_process() {
 						received_packet_count += 1;
 
 						tail_receiving_time = current_time;
-						cout << sc_time_stamp() << name() << "recived normal Syn [" << rx_flit.dst_x <<"][" << rx_flit.dst_y << "]" << endl;
+						//cout << sc_time_stamp() << name() << "recived normal Syn [" << rx_flit.dst_x <<"][" << rx_flit.dst_y << "]" << endl;
 
 						int packet_latency = tail_receiving_time
 								- head_injected_time;
@@ -286,17 +285,15 @@ void SyntheticProc::rx_process() {
 						}
 						if( was_reconfig[vc_id] )
 						{
-							cout << sc_time_stamp() << name()
-									<< "rec Syn [" << rx_flit.dst_x <<"][" << rx_flit.dst_y << "]"
-									<< "----------out_vc_remain:" << endl;
+							//cout << sc_time_stamp() << name()
+								//	<< "rec Syn [" << rx_flit.dst_x <<"][" << rx_flit.dst_y << "]"
+								//	<< "----------out_vc_remain:" << endl;
 
 							was_reconfig[vc_id] = 0;
 							total_latency_reconfig += packet_latency;
 							received_packets_count_reconfig += 1;
 							reconfig_en = 1;
 							in_vc_buffer_rd.write(0);
-
-
 						}
 					} else {
 						// no thing
@@ -319,191 +316,13 @@ void SyntheticProc::rx_process() {
 }
 
 void SyntheticProc::reset_reconfig_process(){
-	//while(true){
 	if (reset.read()) {
 		do_activate_em = false;
-		} else {
-	if(reconfig_en == 1){
-		do_activate_em = true;
-	//	wait(2,SC_NS);
-		//do_activate_em = 0;
-	}
-	else
-	do_activate_em = false;
-	//if(reconf_done.read()) {
-
-	//do_activate_em = false;
-	//}
-
+	} else {
+		if(reconfig_en == 1){
+			do_activate_em = true;
 		}
-	  // do_activate_em = 0;
-	//	wait();
-	//}
-}
-/*
- * update out_vc_remain of all VCs
- *//*
-void SyntheticProc::out_vc_remain_process() {
-	for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-		int tmp = out_vc_remain_reg[vo];
-		if (count_minus[vo].read())
-			tmp -= 1;
-		if (count_plus[vo].read())
-			tmp += 1;
-		if (reconf_done.read() == 0)
-			out_vc_remain[vo].write(tmp);
-		else{
-			if(out_vc_remain_reconf[vo] >=1 )
-				out_vc_remain[vo].write(out_vc_remain_reconf[vo].read()-1);
-			else
-				out_vc_remain[vo].write(0);
-
-		}
-
-
-
-		 switch (out_vc_remain_reg[vo].read()){
-		 case (0):
-		 if (count_plus[vo].read() && !count_minus[vo].read())
-		 out_vc_remain[vo].write(1);
-		 else
-		 out_vc_remain[vo].write(0);
-		 break;
-		 case (1):
-		 if (count_minus[vo].read() && !count_plus[vo].read())
-		 out_vc_remain[vo].write(0);
-		 else
-		 out_vc_remain[vo].write(1);
-		 break;
-		 }
-
+		else
+			do_activate_em = false;
 	}
 }
-*/
-/*
- * pipelined out_vc_remain
- *//*
-void SyntheticProc::out_vc_remain_reg_process() {
-	if (reset.read()) {
-		for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-//			out_vc_remain_reg[vo].write(1);
-			out_vc_remain_reg[vo].write((int) RouterParameter::buffer_size);
-		}
-	}
-	 else if( reconf_done.read() == 1 ){
-			for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-				if(out_vc_remain_reconf[vo] >=1 )
-					out_vc_remain_reg[vo].write(out_vc_remain_reconf_reg[vo].read()-1);
-				else
-					out_vc_remain_reg[vo].write(0);
-			}
-	}
-	 else{
-			for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-					out_vc_remain_reg[vo].write(out_vc_remain[vo].read());
-				}
-	 }
-}
-
-
- * count_plus = out_vc_buffer_rd
-
-void SyntheticProc::count_plus_process() {
-	for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-		count_plus[vo].write(out_vc_buffer_rd[vo].read());
-	}
-}*/
-
-/*
- * For Proc Testing
- */
-
-/*
- // default value for all parameters
- //int Parameter::flit_size = FLIT_SIZE;
-
- int Parameter::packet_length = PACKET_LENGTH;
- unsigned int Parameter::buffer_size = BUFFER_SIZE;
- unsigned int Parameter::buffer_reserve = BUFFER_RESERVE;
-
- int Parameter::dim_x = DIM_X;
- int Parameter::dim_y = DIM_Y;
-
- int Parameter::random_seed = time(NULL);
- int Parameter::traffic_type = TRAFFIC_RANDOM;
-
- double Parameter::flit_inject_rate = FLIT_INJECTION_RATE;
-
- int Parameter::routing_type = ROUTING_XY;
- int Parameter::arbiter_type = ARBITER_ROUNDROBIN;
-
- int sc_main(int argc, char *argv[]){
- srand(Parameter::random_seed);
-
- sc_signal <int> local_x;
- sc_signal <int> local_y;
-
- local_x.write(3);
- local_y.write(4);
-
-
- sc_clock	clk("clk", 1, SC_NS);
- sc_signal <bool> reset;
-
- sc_signal <bool> valid_in;
- sc_signal <Flit> flit_in;
- sc_signal <bool> in_full;
-
- sc_signal <bool> valid_out;
- sc_signal <Flit> flit_out;
- sc_signal <bool> out_full;
-
- PE	proc("Processor");
- proc.local_x(local_x);
- proc.local_y(local_y);
- proc.clk(clk);
- proc.reset(reset);
- proc.valid_in(valid_in);
- proc.flit_in(flit_in);
- proc.in_full(in_full);
- proc.valid_out(valid_out);
- proc.flit_out(flit_out);
- proc.out_full(out_full);
-
-
- sc_start(0.5, SC_NS);
-
- sc_trace_file *wf = sc_create_vcd_trace_file("pe");
- sc_trace(wf, clk, "clock");
- sc_trace(wf, reset, "reset");
- sc_trace(wf, valid_in, "valid_in");
- sc_trace(wf, flit_in.read().payload, "payload_in");
- sc_trace(wf, in_full, "in_full");
- sc_trace(wf, valid_out, "valid_out");
- sc_trace(wf, flit_out.read().payload, "payload_out");
- sc_trace(wf, flit_out.read().head, "head_out");
- sc_trace(wf, flit_out.read().dst_x, "dst_x");
- sc_trace(wf, flit_out.read().dst_y, "dst_y");
- sc_trace(wf, flit_out.read().tail, "tail_out");
- sc_trace(wf, out_full, "out_full");
-
- reset.write(1);
- out_full.write(0);
- //	valid_in.write(0);
- //	rd_req.write(0);
- sc_start(2, SC_NS);
-
- reset.write(0);
- sc_start(1, SC_NS);
-
- sc_start(100000, SC_NS);
-
- cout << "number of injected packets = " << proc.injected_packet_count << endl;
- cout << "avarage of inter-injected times = "
- << sc_time_stamp().to_double()/1000/proc.injected_packet_count << endl;
-
- sc_close_vcd_trace_file(wf);
- return 0;
- }
-
- */

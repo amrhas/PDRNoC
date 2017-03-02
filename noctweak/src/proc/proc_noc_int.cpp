@@ -125,17 +125,15 @@ void proc_noc_interface::in_buffer_process() {
 			in_buffer.pop();
 		}
 		for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
-		  r_in_vc_buffer_rd[vi].write(0);
-		  r_interface_buffer_rd[vi].write(0);
-
+			r_in_vc_buffer_rd[vi].write(0);
+			r_interface_buffer_rd[vi].write(0);
 		}
 		p_valid_out.write(0);
 		p_flit_out.write(Flit());
 
 		for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
-					in_count_plus[vo].write(0);
-				}
-
+			in_count_plus[vo].write(0);
+		}
 	} else {	// if positive clk edge
 
 		if (in_buffer.size() >= buffer_size-1 && r_valid_in.read()) {
@@ -151,7 +149,7 @@ void proc_noc_interface::in_buffer_process() {
 			// read
 			if (in_buffer.empty()) {
 				cout << "ERROR: read from an EMPTY in buffer: " << name() << endl;
-						exit(-1);
+				exit(-1);
 			}
 			// remove the first flit from the buffer
 			p_valid_out.write(1);
@@ -160,34 +158,24 @@ void proc_noc_interface::in_buffer_process() {
 			in_count_plus[0].write(1);
 			// write
 			if (in_buffer.size() == buffer_size) {
-				//cerr << "ERROR: write to a FULL in buffer: " << name() << endl;
-				//exit(-1);
 				for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
 					r_in_vc_buffer_rd[vi].write(0);
 				}
 			}
 			else{
-				//in_buff_empty.write(0);
-
 				Flit tmp = r_flit_in.read();
 				int vc_id = tmp.vc_id;
-			r_in_vc_buffer_rd[vc_id].write(1);// always read if having flit coming
-
-						for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
-							if (vi != vc_id)
-								r_in_vc_buffer_rd[vi].write(0);
-						}
-						in_buffer.push(tmp);
-						//in_count_plus[0].write(1);
-
+				r_in_vc_buffer_rd[vc_id].write(1);// always read if having flit coming
+				for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
+					if (vi != vc_id)
+						r_in_vc_buffer_rd[vi].write(0);
+				}
+				in_buffer.push(tmp);
 			}
 			in_buff_empty.write(in_buffer.empty());
 			for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
 				r_interface_buffer_rd[vi].write(0);
 			}
-			// Write the input flit to the buffer
-			//full.write(0);
-
 		} else if (r_valid_in.read()) {
 
 			if (in_buffer.size() == buffer_size) {
@@ -197,19 +185,16 @@ void proc_noc_interface::in_buffer_process() {
 			}
 			else{
 				Flit tmp = r_flit_in.read();
-								int vc_id = tmp.vc_id;
-								r_in_vc_buffer_rd[vc_id].write(1);// always read if having flit coming
+				int vc_id = tmp.vc_id;
+				r_in_vc_buffer_rd[vc_id].write(1);// always read if having flit coming
 
-							for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
-								if (vi != vc_id)
-									r_in_vc_buffer_rd[vi].write(0);
-							}
-			// write the input flit to the buffer
-			in_buffer.push(tmp);
-			//in_count_plus[0].write(1);
-			in_buff_empty.write(0);
-			//in_buff_empty.write(0);
-
+				for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
+					if (vi != vc_id)
+						r_in_vc_buffer_rd[vi].write(0);
+					}
+				// write the input flit to the buffer
+				in_buffer.push(tmp);
+				in_buff_empty.write(0);
 			}
 			for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
 				r_interface_buffer_rd[vi].write(0);
@@ -240,28 +225,21 @@ void proc_noc_interface::in_buffer_process() {
 			// update flit_out and empty signals
 
 			for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
-							r_in_vc_buffer_rd[vi].write(0);
-						}
-
-			//full.write(0);
+				r_in_vc_buffer_rd[vi].write(0);
+			}
 		}
 		else{
 			for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
 				r_interface_buffer_rd[vi].write(0);
 			}
 			for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
-					r_in_vc_buffer_rd[vi].write(0);
-				}
+				r_in_vc_buffer_rd[vi].write(0);
+			}
 			in_buff_empty.write(in_buffer.empty());
-			//in_count_minus[0].write(0);
 			in_count_plus[0].write(0);
-			//in_buff_empty.write(1);
 			p_valid_out.write(0);
-					p_flit_out.write(Flit());
-
+			p_flit_out.write(Flit());
 		}
-
-
 	}
 }
 
@@ -273,70 +251,47 @@ void proc_noc_interface::out_buffer_process() {
 		while (!out_buffer.empty()) {
 			out_buffer.pop();
 		}
-		//out_buffer.write(Flit());
-
-	} else {	// if positive clk edge
-
+	} else {
 		if (out_buffer.size() >= buffer_size-1) {
 			p_buff_out_full.write(1);
 		}
 		else
 			p_buff_out_full.write(0);
-		//empty.write(buffer.empty());
 		int current_time = (int) (sc_time_stamp().to_double() / 1000);
 
 		if (p_valid_in.read() && out_buf_out_buffer_rd.read()) {
-
 			// read
 			if (out_buffer.empty()) {
 				cout << "ERROR: read from an EMPTY out buffer: " << name() << endl;
 						exit(-1);
 			}
-
 			// remove the first flit from the buffer
 			out_buffer.pop();
-
 			// write
 			if (out_buffer.size() == buffer_size) {
 				cerr << "ERROR: write to a FULL out buffer: " << name() << endl;
-				//exit(-1);
+				exit(-1);
 			}
 			else{
-
 			// Write the input flit to the buffer
 			out_buffer.push(p_flit_in.read());
 			}
-			//full.write(0);
-			//empty.write(buffer.empty());
-
 		} else if (p_valid_in.read()) {
-
 			if (out_buffer.size() == buffer_size) {
 				cerr << "ERROR: write to a FULL out buffer: " << name() << endl;
-				//exit(-1);
-			}else
-			{
-
-			// write the input flit to the buffer
-			out_buffer.push(p_flit_in.read());
+				exit(-1);
 			}
-			//empty.write(buffer.empty());
-			//full.write(0);
-			//buffer_out.write(buffer.front());
-
+			else {
+				// write the input flit to the buffer
+				out_buffer.push(p_flit_in.read());
+			}
 		} else if (out_buf_out_buffer_rd.read()) {
 			if (out_buffer.empty()) {
 				cerr << "ERROR: read from an EMPTY out buffer: " << name() << endl;				exit(-1);
 			}
-
 			// remove the first flit from the buffer
 			out_buffer.pop();
-
-			// update flit_out and empty signals
-
-			//full.write(0);
 		}
-
 	}
 }
 

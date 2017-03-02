@@ -40,28 +40,20 @@ public rc_reconfigurable{
 	// Input interface
 	rc_in_portal<bool> p_valid_in;
 	rc_in_portal<Flit> p_flit_in;
-//	sc_out <bool> in_full;
 	rc_out_portal<bool> p_in_vc_buffer_rd;
 
 	// output interface
 	rc_out_portal<bool> p_valid_out;
 	rc_out_portal<Flit> p_flit_out;
-//	sc_in <bool> out_full[MAX_N_VCS];	// "full" signals from virtual channels of the local router port
 	rc_in_portal<bool> p_out_vc_buffer_rd;	// "full" signals from virtual channels of the local router port
 
-	//rc_portal<sc_signal <bool>> p_do_activate_syn;
-	//rc_portal<sc_signal <bool>> p_do_activate_em;
+
 	//----------- functions
 	// initialize all constants inside the processor (x,y)
     void initialize(int x, int y);
 	ProcEvaluationFactors *evaluation();
 	void change_module();
 	void reconfig_signal_process();
-    //bool do_activate_syn;
-    //bool do_activate_em;
-	// evaluation
-//	virtual SyntheticFactors *synthetic_evaluation()=0;
-//	virtual AsAPFactors *asap_evaluation()=0;
 
 	//EmbeddedWithACKProc_rc  procEmACK;
 	//EmbeddedProc_rc*         procEm;
@@ -202,8 +194,6 @@ public rc_reconfigurable{
   private:
     enum modules{SYN,SYN1, EM} active_module;
     sc_signal<bool>  do_activate_syn1;
-	//rc_reconfigurable active_module;
-
 };
 
-#endif /* VIRTUAL_PROC_H_ */
+#endif /* PROC_RC_H_ */

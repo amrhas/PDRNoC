@@ -15,11 +15,11 @@
 #ifndef PROC_NOC_INTER_H_
 #define PROC_NOC_INTER_H_
 
+#include <queue>
 #include <systemc.h>
 #include "../definition.h"
 #include "../common_functions.h"
 #include "../router/router_parameters.h"
-#include "../router/wormhole_pipeline/buffer.h"
 
 #include "proc_parameters.h"
 //#include "../../out_vc_arbiter.h"
