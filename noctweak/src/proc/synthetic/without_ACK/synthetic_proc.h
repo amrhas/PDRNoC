@@ -106,6 +106,8 @@ class SyntheticProc: public VirtualProc{
 	int received_packets_count_reconfig;
 	sc_signal <Flit> queue_out;
 
+	VirtualProc* mProcIF;
+
 	sc_signal <bool> reconfig_en;
 	sc_signal <bool> queue_out_valid;	// queue output before sent to LOCAL port
 

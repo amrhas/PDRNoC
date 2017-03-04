@@ -402,6 +402,10 @@ void show_help(){
 		 << "         option = reconfig:	perform reconfig application\n"
 		 << "      -reconfig_time1 [value]: reconfiguration time for proc 1\n"
 		 << "      -reconfig_time2 [value]: reconfiguration time for proc 2\n"
+		 << "      -fir_rc [value]:	flit injection rate of reconfig (number of flits injected by each core per cycle)\n"
+		 << "         0 < fir <= 1. Default = 0.1\n"
+		 << "      -length_rc [value]:	the number of flits per rconfig packet.\n"
+		 << "         (only for the fixed packet length option. Default = 5.)\n"
 		 << "      -seed [value]:	random seed for the simulation.\n"
 		 << "            (the same random seed will drive the same output results for\n"
 		 << "            the same network configuration. It's used for easier debugging.\n"
@@ -456,18 +460,18 @@ void show_help(){
 
 	cout << "      ------------------- Traffic Options --------------------------------\n";
 	cout << "      -fir [value]:	flit injection rate (number of flits injected by each core per cycle)\n"
-		 << "         0 < fir <= 1. Default = 0.2\n"
+		 << "         0 < fir <= 1. Default = 0.1\n"
 		 << "      -dist [option]:	probability distribution of the period between two injected packets\n"
 		 << "         option = exponential:	exponential distribution (default)\n"
 		 << "         option = identical:	identical distribution\n"
-		 << "      -plengthtype [option]:	packet length is fixed or variable\n"
+		 << "      -plength [option]:	packet length is fixed or variable\n"
 		 << "         option = fixed:		fixed packet length (default)\n"
 		 << "         option = variable:	variable packet length\n"
-		 << "      -plength [value]:	the number of flits per packet.\n"
+		 << "      -length [value]:	the number of flits per packet.\n"
 		 << "         (only for the fixed packet length option. Default = 5.)\n"
-		 << "      -plengthmin [value]:	the minimum number of flits per packet\n"
+		 << "      -lengthmin [value]:	the minimum number of flits per packet\n"
 		 << "         (only for the variable packet length option. Default = 2.)\n"
-		 << "      -plengthmax [value]:	the maximum number of flits per packet\n"
+		 << "      -lengthmax [value]:	the maximum number of flits per packet\n"
 		 << "         (only for the variable packet length option. Default = 10.)\n\n";
 
 	cout << "      ------------------- Router Settings --------------------------------\n";
