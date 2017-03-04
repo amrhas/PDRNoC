@@ -63,6 +63,10 @@ struct ProcessorParameters{	// using for both Synthetic and Embedded traffics
 	static int proc_reconfig_time_1;
 
 	static int proc_reconfig_time_2;
+
+	static int packet_length_reconfig;
+	static double  flit_inject_rate_reconfig;
+
 };
 
 

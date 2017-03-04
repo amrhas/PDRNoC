@@ -115,6 +115,12 @@ void command_line_parser(int argc, char *argv[]){
 			else if (!option.compare("-reconfig_time2")){	// n_hotspots
 				ProcessorParameters::proc_reconfig_time_2 = atoi(argv[++i]);
 			}
+			else if (!option.compare("-fir_rc")){	// n_hotspots
+				ProcessorParameters::flit_inject_rate_reconfig = atoi(argv[++i]);
+			}
+			else if (!option.compare("-length_rc")){	// n_hotspots
+				ProcessorParameters::packet_length_reconfig = atoi(argv[++i]);
+			}
 			else if (!option.compare("-nhs")){	// n_hotspots
 				SyntheticParameters::n_hotspots = atoi(argv[++i]);
 			}

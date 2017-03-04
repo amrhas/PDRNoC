@@ -124,16 +124,46 @@ void SyntheticProc::tx_process() {
 			default:
 				;
 			}
-			if(local_x == 0 && local_y == 0){
-				if (CommonParameter::platform_type == PLATFORM_RECONFIG){
+
+			if(local_x == 0 && local_y == 0 && CommonParameter::platform_type == PLATFORM_RECONFIG){
 				head_flit = create_head_flit_random_reconfig(local_x, local_y,
 										current_time);
 				cout << sc_time_stamp() << name() << "Syn [" << head_flit->dst_x <<"][" << head_flit->dst_y << "]" << endl;
+
+				if((head_flit->dst_x != local_x)
+						|| (head_flit->dst_y != local_y)) {
+					int current_packet_length = ProcessorParameters::packet_length_reconfig;
+
+					Packet *packet = new Packet(head_flit, current_packet_length);
+					injected_packet_count += 1;
+
+				//			cout << "@ cycle " << sc_time_stamp().to_double()/1000
+				//					<< ": PE (" << local_x << ", " << local_y << ") injects a packet" << endl;
+
+					// push all its flits to the source_queue
+					for (int i = 0; i < current_packet_length; i++) {
+						source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
+					}
+
+					delete packet;
 				}
+
+				// schedule for next packet injection
+				int temp = inter_injection_time(
+						ProcessorParameters::flit_inject_rate_reconfig,
+						ProcessorParameters::inter_arrival_time_type);
+
+				//			cout << "temp = " << temp << endl;
+
+				if (temp == 0)
+					temp = 1;
+				next_injection_time = current_time + temp;
+
+				delete (head_flit);
 			}
 
 			// create and push a packet to the source queue if the destination is different from the source
-			if ((head_flit->dst_x != local_x)
+			else if ((head_flit->dst_x != local_x)
 					|| (head_flit->dst_y != local_y)) {
 				int current_packet_length;
 				if (ProcessorParameters::packet_length_type
@@ -162,18 +192,20 @@ void SyntheticProc::tx_process() {
 				delete packet;	// clean the memory
 			}
 
-			// schedule for next packet injection
-			int temp = inter_injection_time(
-					ProcessorParameters::flit_inject_rate,
-					ProcessorParameters::inter_arrival_time_type);
+			if(!(local_x == 0 && local_y == 0 && CommonParameter::platform_type == PLATFORM_RECONFIG)){
+				// schedule for next packet injection
+				int temp = inter_injection_time(
+						ProcessorParameters::flit_inject_rate,
+						ProcessorParameters::inter_arrival_time_type);
 
-			//			cout << "temp = " << temp << endl;
+				//			cout << "temp = " << temp << endl;
 
-			if (temp == 0)
-				temp = 1;
-			next_injection_time = current_time + temp;
+				if (temp == 0)
+					temp = 1;
+				next_injection_time = current_time + temp;
 
-			delete (head_flit);
+				delete (head_flit);
+			}
 		} else {
 			// do nothing
 		}

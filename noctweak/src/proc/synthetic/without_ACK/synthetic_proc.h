@@ -37,19 +37,6 @@ using namespace std;
 class SyntheticProc: public VirtualProc{
   public:
 
-	/*sc_signal <int> out_vc_remain[MAX_N_VCS];		// keep trace of number of idle entries of each output VC
-	sc_signal <int> out_vc_remain_reg[MAX_N_VCS];
-
-	sc_signal <bool> count_plus[MAX_N_VCS];	// = out_vc_buffer_rd
-	sc_signal <bool> count_minus[MAX_N_VCS];
-
-
-	sc_signal <int> out_vc_remain_reconf_reg[MAX_N_VCS];
-	sc_signal <bool> queue_out_valid_reconf;	// queue output before sent to LOCAL port
-	sc_signal <bool> count_plus_reconf[MAX_N_VCS];	// = out_vc_buffer_rd
-	sc_signal <bool> count_minus_reconf[MAX_N_VCS];
-	sc_signal <int> out_vc_remain_reconf[MAX_N_VCS];		// keep trace of number of idle entries of each output VC
-*/
 	sc_signal <int> reconf_done;
 
 	// An "infinite" queue of flits to be injected into the NoC
@@ -66,11 +53,6 @@ class SyntheticProc: public VirtualProc{
 
 	void flit_out_process();
 
-	//void out_vc_remain_process();	// update out_vc_remain
-
-	//void count_plus_process();	// pipelined out_vc_remain
-	//void out_vc_remain_reg_process();	// pipelined out_vc_remain
-
 	void rx_process();
 	void reset_reconfig_process();
 
@@ -84,29 +66,6 @@ class SyntheticProc: public VirtualProc{
 		// receive flit
 		SC_METHOD (rx_process);
 		sensitive << reset.pos() << clk.pos();
-
-		// update out_vc_remain
-		//SC_METHOD (out_vc_remain_process);
-		/*sensitive << reconf_done;
-		for (int vo=0; vo<RouterParameter::n_VCs; vo++){
-			sensitive << out_vc_remain_reg[vo];
-			sensitive << count_plus[vo];
-//			sensitive << out_vc_buffer_rd[vo];
-			sensitive << count_minus[vo];
-		}*/
-/*
-
-		// pipelined out_vc_remain
-		SC_METHOD (out_vc_remain_reg_process);
-		sensitive << clk.pos() << reset.pos() << reconf_done ;
-
-		// count_plus = out_vc_buffer
-		SC_METHOD (count_plus_process);
-		for (int vo=0; vo<RouterParameter::n_VCs; vo++){
-			sensitive << out_vc_buffer_rd[vo];
-//			sensitive << out_port_EFC_en;
-		}
-*/
 
 		// flit_out
 		SC_METHOD (flit_out_process);
@@ -123,28 +82,6 @@ class SyntheticProc: public VirtualProc{
 		// receive flit
 		SC_METHOD (rx_process);
 		sensitive << reset.pos() << clk.pos();
-
-/*
-		// update out_vc_remain
-		SC_METHOD (out_vc_remain_process);
-		for (int vo=0; vo<RouterParameter::n_VCs; vo++){
-			sensitive << out_vc_remain_reg[vo];
-			sensitive << count_plus[vo];
-//			sensitive << out_vc_buffer_rd[vo];
-			sensitive << count_minus[vo];
-		}
-
-		// pipelined out_vc_remain
-		SC_METHOD (out_vc_remain_reg_process);
-		sensitive << clk.pos() << reset.pos();
-
-		// count_plus = out_vc_buffer
-		SC_METHOD (count_plus_process);
-		for (int vo=0; vo<RouterParameter::n_VCs; vo++){
-			sensitive << out_vc_buffer_rd[vo];
-//			sensitive << out_port_EFC_en;
-		}
-*/
 
 		// flit_out
 		SC_METHOD (flit_out_process);
@@ -168,8 +105,6 @@ class SyntheticProc: public VirtualProc{
 	double total_latency_reconfig;
 	int received_packets_count_reconfig;
 	sc_signal <Flit> queue_out;
-
-	VirtualProc* mProcIF;
 
 	sc_signal <bool> reconfig_en;
 	sc_signal <bool> queue_out_valid;	// queue output before sent to LOCAL port

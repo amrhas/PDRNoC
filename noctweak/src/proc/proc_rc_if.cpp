@@ -55,8 +55,8 @@ void procRCIf::reconfig_signal_process(){
 			procSyn1->reconf_done.write(0);
 			procSyn->reconf_done.write(0);
 
-			if(procSyn->do_activate_em == 1 && active_module == SYN && do_activate_em == false){
-				do_activate_em = 1;
+			if(procSyn->do_activate_em == 1 && active_module == SYN ){
+				//do_activate_em = 1;
 
 				procSyn1->reconf_done.write(1);
 				ctrl.unload(*procSyn);
@@ -69,8 +69,8 @@ void procRCIf::reconfig_signal_process(){
 				wait();
 			}
 
-			if( procSyn1->do_activate_em == 1 && active_module == SYN1 &&  do_activate_syn == false){
-				do_activate_syn = 1;
+			if( procSyn1->do_activate_em == 1 && active_module == SYN1 ){
+				//do_activate_syn = 1;
 
 				procSyn->reconf_done.write(1);
 				ctrl.unload(*procSyn1);
@@ -82,8 +82,8 @@ void procRCIf::reconfig_signal_process(){
 				active_module = SYN;
 				wait();
 			}
-			do_activate_syn =0;
-			do_activate_em = 0;
+			//do_activate_syn =0;
+			//do_activate_em = 0;
 
 			wait();
 		}

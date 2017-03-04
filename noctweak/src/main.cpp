@@ -110,6 +110,8 @@ int RouterParameter::n_pipeline_stages = 4;
 
 int ProcessorParameters::proc_reconfig_time_1 = RECONFIG_TIME_1;
 int ProcessorParameters::proc_reconfig_time_2 = RECONFIG_TIME_2;
+int ProcessorParameters::packet_length_reconfig = PACKET_LENGTH;
+double ProcessorParameters::flit_inject_rate_reconfig = FLIT_INJECTION_RATE;
 
 int ProcessorParameters::packet_length_type = PACKET_LENGTH_TYPE_FIXED;
 
