@@ -121,6 +121,9 @@ void command_line_parser(int argc, char *argv[]){
 			else if (!option.compare("-length_rc")){	// n_hotspots
 				ProcessorParameters::packet_length_reconfig = atoi(argv[++i]);
 			}
+			else if (!option.compare("-rc_num")){	// n_hotspots
+				ProcessorParameters::block_reconfig_number = atoi(argv[++i]);
+			}
 			else if (!option.compare("-nhs")){	// n_hotspots
 				SyntheticParameters::n_hotspots = atoi(argv[++i]);
 			}
@@ -400,12 +403,6 @@ void show_help(){
 		 <<	"         option = synthetic:	a synthetic traffic pattern (default)\n"
 		 << "         option = embedded:	an embedded application trace\n"
 		 << "         option = reconfig:	perform reconfig application\n"
-		 << "      -reconfig_time1 [value]: reconfiguration time for proc 1\n"
-		 << "      -reconfig_time2 [value]: reconfiguration time for proc 2\n"
-		 << "      -fir_rc [value]:	flit injection rate of reconfig (number of flits injected by each core per cycle)\n"
-		 << "         0 < fir <= 1. Default = 0.1\n"
-		 << "      -length_rc [value]:	the number of flits per rconfig packet.\n"
-		 << "         (only for the fixed packet length option. Default = 5.)\n"
 		 << "      -seed [value]:	random seed for the simulation.\n"
 		 << "            (the same random seed will drive the same output results for\n"
 		 << "            the same network configuration. It's used for easier debugging.\n"
@@ -422,7 +419,17 @@ void show_help(){
 		 << "         if simmode option = packet:	do not consider the first M received packets\n"
 		 << "         if simmode option = cycle:	warmup time is M clock cycles\n\n";
 
-	cout << "      ------------------ Synthetic Options -----------------------------\n";
+	cout << "      ------------------ Reconfigurable Options -----------------------------\n";
+	cout << "      -reconfig_time1 [value]: reconfiguration time for proc 1\n"
+	     << "      -reconfig_time2 [value]: reconfiguration time for proc 2\n"
+	     << "      -fir_rc [value]:	flit injection rate of reconfig (number of flits injected by each core per cycle)\n"
+	     << "         0 < fir <= 1. Default = 0.1\n"
+	     << "      -length_rc [value]:	the number of flits per rconfig packet.\n"
+	     << "         (only for the fixed packet length option. Default = 5.)\n"
+	     << "      -rc_num [value]:	the number of core to be reconfigured at time.\n"
+	     << "         (Default = 1.)\n";
+
+    cout << "      ------------------ Synthetic Options -----------------------------\n";
 	cout << "      -dimx [value]:	X dimension length of the 2-D mesh network. Default value = 8.\n"
 		 << "      -dimy [value]:	Y dimension length of the 2-D mesh network. Default value = 8.\n"
 		 << "      -traffic [option]:	synthetic traffic patterns used for the simulation.\n"

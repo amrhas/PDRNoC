@@ -47,43 +47,42 @@ void procRCIf::reconfig_signal_process(){
 			do_activate_em = false;
 			do_activate_syn =false;
 
-			procSyn1->reconf_done.write(0);
-			procSyn->reconf_done.write(0);
+			recof_done_s.write(0);
+			//procSyn->reconf_done.write(0);
+			for(int i=0; i<NUM_RC_PROC; i++){
+				rcProc[i]->reconf_done.write(0);
+			}
 			wait();
 
+
 		}else{
-			procSyn1->reconf_done.write(0);
-			procSyn->reconf_done.write(0);
+			//recof_done_s.write(0);
+			//procSyn->reconf_done.write(0);
+			for(int i=0; i<NUM_RC_PROC; i++){
+				rcProc[i]->reconf_done.write(0);
+			}
 
 			if(procSyn->do_activate_em == 1 && active_module == SYN ){
-				//do_activate_em = 1;
-
-				procSyn1->reconf_done.write(1);
 				ctrl.unload(*procSyn);
 				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): deactivated Synthetic" << endl;
 				ctrl.activate(*procSyn1);
 				currentProc=procSyn1;
-				procSyn1->reconf_done.write(0);
+				currentProc->reconf_done.write(1);
 				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): activated Synthetic1" << endl;
 				active_module = SYN1;
 				wait();
 			}
 
 			if( procSyn1->do_activate_em == 1 && active_module == SYN1 ){
-				//do_activate_syn = 1;
-
-				procSyn->reconf_done.write(1);
 				ctrl.unload(*procSyn1);
 				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): deactivated Synthetic1" << endl;
 				ctrl.activate(*procSyn);
 				currentProc=procSyn;
-				procSyn->reconf_done.write(0);
+				currentProc->reconf_done.write(1);
 				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): activated Synthetic" << endl;
 				active_module = SYN;
 				wait();
 			}
-			//do_activate_syn =0;
-			//do_activate_em = 0;
 
 			wait();
 		}

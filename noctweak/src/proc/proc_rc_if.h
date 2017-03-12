@@ -22,11 +22,11 @@
 //#include "asap/asapcore_to_router.h"
 #include "../definition.h"
 #include "proc_evaluation.h"
+
 //#include "embedded/with_ACK/embedded_with_ACK_proc_rc.h"
 //#include "embedded/without_ACK/embedded_proc_rc.h"
 
 //#include "synthetic/with_ACK/synthetic_with_ACK_proc_rc.h"
-
 #include "synthetic/without_ACK/synthetic_proc_rc.h"
 
 #define NUM_RC_PROC 2
@@ -48,6 +48,7 @@ public rc_reconfigurable{
 	rc_out_portal<Flit> p_flit_out;
 	rc_in_portal<bool> p_out_vc_buffer_rd;	// "full" signals from virtual channels of the local router port
 
+	//rc_in_portal<bool> p_reconf_done;
 
 	//----------- functions
 	// initialize all constants inside the processor (x,y)
@@ -55,7 +56,7 @@ public rc_reconfigurable{
 	ProcEvaluationFactors *evaluation();
 	void change_module();
 	void reconfig_signal_process();
-
+	//void reconfig_done_signal_process();
 	//EmbeddedWithACKProc_rc  procEmACK;
 	//EmbeddedProc_rc*         procEm;
 	//SyntheticWithACKProc_rc procSynAck;
@@ -66,6 +67,7 @@ public rc_reconfigurable{
 
 	rc_control ctrl;
 	sc_signal <bool> reset_int;
+	sc_signal <bool> recof_done_s;
 	// constructor
 	SC_HAS_PROCESS(procRCIf);
 	procRCIf (sc_module_name name): VirtualProc(name),
@@ -94,6 +96,7 @@ public rc_reconfigurable{
 		p_in_vc_buffer_rd.static_port(in_vc_buffer_rd);
 		p_out_vc_buffer_rd.static_port(out_vc_buffer_rd);
 
+		//p_reconf_done.static_port(recof_done_s);
 		for(int i=0; i<NUM_RC_PROC; i++){
 			p_clk.dynamic_port(rcProc[i]->clk);
 
@@ -105,10 +108,11 @@ public rc_reconfigurable{
 
 			p_in_vc_buffer_rd.dynamic_port(rcProc[i]->in_vc_buffer_rd);
 			p_out_vc_buffer_rd.dynamic_port(rcProc[i]->out_vc_buffer_rd);
+			//p_reconf_done.dynamic_port(rcProc[i]->reconf_done);
 		}
 
-		procSyn->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_NS));
-		procSyn1->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_NS));
+		procSyn->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_US));
+		procSyn1->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_US));
 		//procEm->rc_set_delay(RC_LOAD, sc_time(5, SC_NS));
 		ctrl.add (*procSyn + *procSyn1);
 		ctrl.activate(*procSyn);

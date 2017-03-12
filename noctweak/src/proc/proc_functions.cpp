@@ -54,6 +54,9 @@ Flit *create_head_flit_random(int _src_x, int _src_y, int _time){
 	return create_head_flit_fixed_dest(_src_x, _src_y, dst_x, dst_y, _time);
 }
 
+/*
+ * uniform random reconfig
+ */
 Flit *create_head_flit_random_reconfig(int _src_x, int _src_y, int _time){
 	int dst_x;
 	int dst_y;
@@ -64,6 +67,7 @@ Flit *create_head_flit_random_reconfig(int _src_x, int _src_y, int _time){
 
 	return create_head_flit_reconfig(_src_x, _src_y, dst_x, dst_y, _time);
 }
+
 /*
  * regional with distance of 3 (80% probability)
  */
@@ -320,12 +324,12 @@ Flit *create_head_flit_reconfig(int _src_x, int _src_y, int _dst_x, int _dst_y, 
 	flit_tmp->dst_x = _dst_x;
 	flit_tmp->dst_y = _dst_y;
 
-	flit_tmp->payload = rand();
+	flit_tmp->payload = 0xFADE;
 	flit_tmp->injected_time = _time;
 	flit_tmp->fifo_id = 0;
 	flit_tmp->vc_id = 0;
 
-	flit_tmp->type = 2;	// reconfig
+	flit_tmp->type = 0;	// reconfig
 
 	return flit_tmp;
 

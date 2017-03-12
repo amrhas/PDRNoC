@@ -58,6 +58,14 @@ public:
 	SC_HAS_PROCESS(Platform);
 	//SC_CTOR (Platform){
 	Platform(sc_module_name name_);
+	~Platform(){
+		for (int x=0; x<CommonParameter::dim_x; x++){
+					for (int y=0; y<CommonParameter::dim_y; y++){
+			delete tile[x][y];
+					}
+		}
+			//delete procEm;
+	}
 private:
 	void reconfig_ctrl();
 	int mapRandomX();

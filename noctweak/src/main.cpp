@@ -47,9 +47,10 @@ char *CommonParameter::log_filename = "output.log";
 
 //--------- initialize global variables
 int GlobalVariables::n_total_rx_packets = 0;
-
+int GlobalVariables::reconfig_block_counter = 0;
 int GlobalVariables::last_simulation_time = 0;
-
+int GlobalVariables::black_oos_y[500]={500};
+int	GlobalVariables::black_oos_x[500]={500};
 //----------- setup all default values for all parameters
 int CommonParameter::sim_mode = SIM_MODE_CYCLE;
 
@@ -107,7 +108,7 @@ int RouterParameter::n_pipeline_stages = 4;
 
 //------- Processor parameters default
 
-
+int ProcessorParameters::block_reconfig_number = 1;
 int ProcessorParameters::proc_reconfig_time_1 = RECONFIG_TIME_1;
 int ProcessorParameters::proc_reconfig_time_2 = RECONFIG_TIME_2;
 int ProcessorParameters::packet_length_reconfig = PACKET_LENGTH;
@@ -366,6 +367,11 @@ string getFrequencyString(unsigned long int freqInHertz) {
 //================= MAIN ===========================
 int sc_main(int argc, char *argv[]) {
 
+
+	for(int i =0 ; i< 500 ; i++){
+	GlobalVariables::black_oos_y[i] = 500;
+	GlobalVariables::black_oos_y[i] = 500;
+	}
 	time_t begin_run = time(0);
 	cout << "begin at: " << ctime(&begin_run);
 

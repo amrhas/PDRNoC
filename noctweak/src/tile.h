@@ -29,7 +29,10 @@
 #include "router/vcr_rt_credit/vcr_rt_credit_router.h"
 
 
-SC_MODULE (Tile){
+class Tile: public sc_module {
+
+public:
+//SC_MODULE (Tile){
 
 	// local address
 	int local_x;
@@ -281,6 +284,14 @@ SC_MODULE (Tile){
 				router->out_vc_buffer_rd[i][k](out_vc_buffer_rd[i][k]);
 			}
 		}
+
+	}
+	~Tile(){
+		delete proc;
+
+		delete router;
+
+		delete proc_ni;
 
 	}
 };

@@ -49,6 +49,8 @@ class VirtualProc: public sc_module{
     sc_signal <bool> do_activate_syn ;
     sc_signal <bool> do_activate_em ;
 
+    sc_signal <bool> reconf_done ;
+
 	// initialize all constants inside the processor (x,y)
 	virtual void initialize(int x, int y)=0;
 

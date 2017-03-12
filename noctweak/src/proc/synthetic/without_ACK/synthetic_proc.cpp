@@ -47,7 +47,7 @@ void SyntheticProc::tx_process() {
 		next_injection_time = inter_injection_time(
 				ProcessorParameters::flit_inject_rate,
 				ProcessorParameters::inter_arrival_time_type);
-
+		reconfig_block_counter = 0;
 		// flush all data in the source_queue
 		while (!source_queue.empty()) {
 			source_queue.pop();
@@ -57,14 +57,15 @@ void SyntheticProc::tx_process() {
 //		flit_out.write(Flit());
 		queue_out_valid.write(0);
 		queue_out.write(Flit());
-
+		reconfig_rc_ack=0;
+		reconfig_rc=0;
 //		tail_reg.write(0);
 
 		//for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
 		//	count_minus[vo].write(0);
 		//}
 	} else {	// positive clock edge
-
+int temp;
 		// If we sent a flit to the local router on the previous cycle:
 		// we decrement the number of remaining entry in the buffer of VC 0
 		// and we remove the flit from the local queue
@@ -125,46 +126,83 @@ void SyntheticProc::tx_process() {
 				;
 			}
 
-			if(local_x == 0 && local_y == 0 && CommonParameter::platform_type == PLATFORM_RECONFIG){
+			if(((local_x == 0 && local_y == 0) || (reconfig_rc && !reconfig_rc_ack) )
+					&& CommonParameter::platform_type == PLATFORM_RECONFIG){
 				head_flit = create_head_flit_random_reconfig(local_x, local_y,
 										current_time);
-				cout << sc_time_stamp() << name() << "Syn [" << head_flit->dst_x <<"][" << head_flit->dst_y << "]" << endl;
+				//cout << sc_time_stamp() << name() << "Syn [" << head_flit->dst_x <<"][" << head_flit->dst_y << "]" << endl;
+if(reconfig_rc){
+	head_flit->dst_x = 0;
+	head_flit->dst_y = 0;
+	reconfig_rc_ack = 1;
+	int current_packet_length = ProcessorParameters::packet_length_reconfig;
 
-				if((head_flit->dst_x != local_x)
-						|| (head_flit->dst_y != local_y)) {
+	Packet *packet = new Packet(head_flit, current_packet_length);
+	injected_packet_count += 1;
+	//GlobalVariables::reconfig_block_counter += 1;
+			cout << "@ cycle " << sc_time_stamp().to_double()/1000
+					<< ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
+
+	// push all its flits to the source_queue
+	for (int i = 0; i < current_packet_length; i++) {
+		if(source_queue.size() < 1024){
+			source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
+			//cout << "@ cycle " << sc_time_stamp().to_double()/1000
+			//  << ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
+		}
+	}
+
+	delete packet;
+}
+				if(((head_flit->dst_x != local_x)
+				|| (head_flit->dst_y != local_y))
+						&& GlobalVariables::reconfig_block_counter < ProcessorParameters::block_reconfig_number) {
 					int current_packet_length = ProcessorParameters::packet_length_reconfig;
 
 					Packet *packet = new Packet(head_flit, current_packet_length);
 					injected_packet_count += 1;
-
-				//			cout << "@ cycle " << sc_time_stamp().to_double()/1000
-				//					<< ": PE (" << local_x << ", " << local_y << ") injects a packet" << endl;
+					GlobalVariables::reconfig_block_counter += 1;
+							cout << "@ cycle " << sc_time_stamp().to_double()/1000
+									<< ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
 
 					// push all its flits to the source_queue
 					for (int i = 0; i < current_packet_length; i++) {
-						source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
+						if(source_queue.size() < 1024){
+							source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
+							//cout << "@ cycle " << sc_time_stamp().to_double()/1000
+							//  << ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
+						}
 					}
 
 					delete packet;
 				}
 
 				// schedule for next packet injection
-				int temp = inter_injection_time(
+				 temp = inter_injection_time(
 						ProcessorParameters::flit_inject_rate_reconfig,
 						ProcessorParameters::inter_arrival_time_type);
 
 				//			cout << "temp = " << temp << endl;
 
-				if (temp == 0)
-					temp = 1;
-				next_injection_time = current_time + temp;
 
-				delete (head_flit);
+				//delete (head_flit);
 			}
 
 			// create and push a packet to the source queue if the destination is different from the source
 			else if ((head_flit->dst_x != local_x)
 					|| (head_flit->dst_y != local_y)) {
+				bool black_found =false;
+				for(int i=0 ; i< ProcessorParameters::block_reconfig_number ;i++){
+				  if( GlobalVariables::black_oos_y[i] == head_flit->dst_y && GlobalVariables::black_oos_x[i] == head_flit->dst_x ){
+					  black_found = true;
+				 // 	  cout << "@ cycle " << sc_time_stamp().to_double()/1000
+				//  		 << ": PE (" << head_flit->dst_x << ", "
+				 // 		 << head_flit->dst_y << ") reject a reconfig packet from" << local_x << local_y<< endl;
+				  }
+				}
+				if( CommonParameter::platform_type != PLATFORM_RECONFIG)
+					black_found = false;
+				if(!black_found){
 				int current_packet_length;
 				if (ProcessorParameters::packet_length_type
 						== PACKET_LENGTH_TYPE_FIXED)
@@ -186,17 +224,20 @@ void SyntheticProc::tx_process() {
 
 				// push all its flits to the source_queue
 				for (int i = 0; i < current_packet_length; i++) {
-					source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
+					if(source_queue.size() < 1024)
+						source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
 				}
 
 				delete packet;	// clean the memory
+				if(!(local_x == 0 && local_y == 0 && CommonParameter::platform_type == PLATFORM_RECONFIG)){
+					// schedule for next packet injection
+					 temp = inter_injection_time(
+							ProcessorParameters::flit_inject_rate,
+							ProcessorParameters::inter_arrival_time_type);
+				}
+			}
 			}
 
-			if(!(local_x == 0 && local_y == 0 && CommonParameter::platform_type == PLATFORM_RECONFIG)){
-				// schedule for next packet injection
-				int temp = inter_injection_time(
-						ProcessorParameters::flit_inject_rate,
-						ProcessorParameters::inter_arrival_time_type);
 
 				//			cout << "temp = " << temp << endl;
 
@@ -205,7 +246,7 @@ void SyntheticProc::tx_process() {
 				next_injection_time = current_time + temp;
 
 				delete (head_flit);
-			}
+			//}
 		} else {
 			// do nothing
 		}
@@ -274,7 +315,7 @@ void SyntheticProc::rx_process() {
 //					received_packet_count += 1;
 					head_injected_time = rx_flit.injected_time;
 					was_head[vc_id] = 1;
-					if(rx_flit.type == 2){
+					if(rx_flit.payload == 0xFADE){
 						was_reconfig[vc_id] = 1;
 					}
 				}
@@ -305,7 +346,9 @@ void SyntheticProc::rx_process() {
 
 						was_head[vc_id] = 0;
 
-						if (CommonParameter::sim_mode == SIM_MODE_PACKET) {
+						if(CommonParameter::platform_type == PLATFORM_RECONFIG){
+							if (CommonParameter::sim_mode == SIM_MODE_PACKET) {
+						if(was_reconfig[vc_id] && !(local_y ==0 && local_x ==0))
 							GlobalVariables::n_total_rx_packets += 1;
 
 							if (GlobalVariables::n_total_rx_packets
@@ -315,17 +358,33 @@ void SyntheticProc::rx_process() {
 								sc_stop();	// stop simulation
 							}
 						}
-						if( was_reconfig[vc_id] )
+						}else if (CommonParameter::sim_mode == SIM_MODE_PACKET) {
+
+							GlobalVariables::n_total_rx_packets += 1;
+
+							if (GlobalVariables::n_total_rx_packets
+									>= CommonParameter::max_n_rx_packets) {
+								GlobalVariables::last_simulation_time =
+										current_time;
+								sc_stop();	// stop simulation
+							}
+						}
+						if( was_reconfig[vc_id] && !(local_y ==0 && local_x ==0))
 						{
-							//cout << sc_time_stamp() << name()
-								//	<< "rec Syn [" << rx_flit.dst_x <<"][" << rx_flit.dst_y << "]"
-								//	<< "----------out_vc_remain:" << endl;
+
+							GlobalVariables::black_oos_x[GlobalVariables::reconfig_block_counter-1]=local_x;
+							GlobalVariables::black_oos_y[GlobalVariables::reconfig_block_counter-1]=local_y;
 
 							was_reconfig[vc_id] = 0;
 							total_latency_reconfig += packet_latency;
 							received_packets_count_reconfig += 1;
 							reconfig_en = 1;
 							in_vc_buffer_rd.write(0);
+						}
+						else if(was_reconfig[vc_id]){
+							GlobalVariables::reconfig_block_counter -= 1;
+							was_reconfig[vc_id] = 0;
+							cout << local_x << local_y << "reconfig_block" << GlobalVariables::reconfig_block_counter << endl;
 						}
 					} else {
 						// no thing
@@ -356,5 +415,14 @@ void SyntheticProc::reset_reconfig_process(){
 		}
 		else
 			do_activate_em = false;
+	}
+}
+void SyntheticProc::reconfig_count_process(){
+	if (reconf_done && !reconfig_rc){
+		//GlobalVariables::reconfig_block_counter -= 1;
+		reconfig_rc = 1;
+		reconfig_rc_ack = 0;
+	}else if (!reconf_done){
+		reconfig_rc = 0;
 	}
 }

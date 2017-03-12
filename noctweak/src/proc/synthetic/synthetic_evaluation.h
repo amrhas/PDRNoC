@@ -27,6 +27,8 @@ private:
 
 	double total_latency_reconfig;
 	int total_rx_packets_reconfig;
+
+
 	// compute total_latency, total_rx_packets,
 	void initialize();
 };

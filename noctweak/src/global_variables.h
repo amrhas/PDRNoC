@@ -18,6 +18,10 @@ struct GlobalVariables{
 	static int n_total_rx_packets;
 
 	static int last_simulation_time;
+
+	static int black_oos_x[500];
+	static int black_oos_y[500];
+	static int reconfig_block_counter;
 };
 
 /*

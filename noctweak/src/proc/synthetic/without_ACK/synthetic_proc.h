@@ -37,7 +37,7 @@ using namespace std;
 class SyntheticProc: public VirtualProc{
   public:
 
-	sc_signal <int> reconf_done;
+   // sc_signal <bool> reconf_done;
 
 	// An "infinite" queue of flits to be injected into the NoC
 	queue <Flit> source_queue;
@@ -55,7 +55,7 @@ class SyntheticProc: public VirtualProc{
 
 	void rx_process();
 	void reset_reconfig_process();
-
+	void reconfig_count_process();
 	// constructor with process enable
 	SC_HAS_PROCESS(SyntheticProc);
 	SyntheticProc (sc_module_name name): VirtualProc(name){
@@ -70,10 +70,11 @@ class SyntheticProc: public VirtualProc{
 		// flit_out
 		SC_METHOD (flit_out_process);
 		sensitive << queue_out_valid << queue_out ;
+
 	}
 
 	//SC_HAS_PROCESS(SyntheticProc);
-	SyntheticProc (sc_module_name name, VirtualProc* procIF ): VirtualProc(name),
+	SyntheticProc (sc_module_name name, VirtualProc* procIF): VirtualProc(name),
 			mProcIF(procIF){
 		// send flit
 		SC_METHOD (tx_process);
@@ -91,12 +92,15 @@ class SyntheticProc: public VirtualProc{
 		SC_METHOD (reset_reconfig_process);
 		sensitive  <<  clk.pos()  << reset.pos() ;
 
+		// flit_out
+		SC_METHOD (reconfig_count_process);
+		sensitive << clk.pos();
 	}
 	// functions
   private:
 	bool was_head[MAX_N_VCS];	// whether a packet head flit was received on a VC
     bool was_reconfig[MAX_N_VCS];
-
+    int reconfig_block_counter;
 	int injected_packet_count;
 	int received_packet_count;
 	double total_latency;
@@ -104,10 +108,12 @@ class SyntheticProc: public VirtualProc{
 	double min_latency;
 	double total_latency_reconfig;
 	int received_packets_count_reconfig;
+
+	bool reconfig_rc;
+	bool reconfig_rc_ack;
 	sc_signal <Flit> queue_out;
 
 	VirtualProc* mProcIF;
-
 	sc_signal <bool> reconfig_en;
 	sc_signal <bool> queue_out_valid;	// queue output before sent to LOCAL port
 

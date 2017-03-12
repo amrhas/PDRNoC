@@ -85,14 +85,19 @@ Platform::Platform(sc_module_name name_):
 //				cout << "Binding " << label << "DONE!" << endl;
 			}
 		}
+
 		//if (CommonParameter::platform_type == PLATFORM_RECONFIG){
-			//SC_THREAD(reconfig_ctrl);
-			//sensitive << clk.pos();
+		//	SC_THREAD(reconfig_ctrl);
+			//for (int x=0; x<CommonParameter::dim_x; x++){
+				//for (int y=0; y<CommonParameter::dim_y; y++){
+			//		sensitive << clk.pos();
+				//}
+			//}
 		//}
 }
 
 void Platform::reconfig_ctrl(){
-	int xLowerBound = 0;
+	/*int xLowerBound = 0;
 	int xUpperBound = 10;
 	std::uniform_int_distribution<> distrtime(xLowerBound, xUpperBound);
 	int timevar=distrtime(gen);
@@ -108,7 +113,16 @@ void Platform::reconfig_ctrl(){
 
 		wait();
 		tile[x][y]->proc->do_activate_em = false;
+	}*/
+	for (int x=0; x<CommonParameter::dim_x; x++){
+		for (int y=0; y<CommonParameter::dim_y; y++){
+			if(tile[x][y]->proc->reconf_done){
+				tile[0][0]->proc->reconf_done = true;
+				wait();
+			}
+		}
 	}
+	wait();
 }
 
 int Platform::mapRandomX() {
