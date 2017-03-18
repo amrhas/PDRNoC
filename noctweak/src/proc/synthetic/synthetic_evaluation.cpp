@@ -74,3 +74,20 @@ double SyntheticEvaluation::avg_throughput_cal(){
 
 	return tmp;
 }
+
+double SyntheticEvaluation::avg_reconfig_time_cal(){
+	double tmp;
+	if (CommonParameter::sim_mode == SIM_MODE_CYCLE){
+//		tmp =  (double)(total_rx_packets)
+//					/ (CommonParameter::dim_x * CommonParameter::dim_y)
+//					/ (CommonParameter::simulation_time - CommonParameter::warmup_time);
+
+		GlobalVariables::last_simulation_time = CommonParameter::simulation_time;
+	}
+//	else {
+		tmp =  (double)(GlobalVariables::last_simulation_time - CommonParameter::warmup_time)/
+				((total_rx_packets_reconfig)*10);
+//	}
+
+	return tmp;
+}

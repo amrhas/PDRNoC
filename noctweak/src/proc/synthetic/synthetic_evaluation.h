@@ -18,6 +18,8 @@ public:
 
 	double avg_latency_cal();
 	double avg_throughput_cal();
+	double avg_reconfig_time_cal();
+
 
 private:
 	Platform *platform;

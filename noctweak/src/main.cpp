@@ -49,6 +49,7 @@ char *CommonParameter::log_filename = "output.log";
 int GlobalVariables::n_total_rx_packets = 0;
 int GlobalVariables::reconfig_block_counter = 0;
 int GlobalVariables::last_simulation_time = 0;
+int GlobalVariables::reconfig_block_counter_oos = 0;
 int GlobalVariables::black_oos_y[500]={500};
 int	GlobalVariables::black_oos_x[500]={500};
 //----------- setup all default values for all parameters
@@ -2078,6 +2079,13 @@ int sc_main(int argc, char *argv[]) {
 	//################## Running Simulation
 	reset.write(1);
 
+	//----------- regulate power according to the operating clk rate and voltage
+	double operating_clk_freq;
+	if (CommonParameter::clk_freq_mode == CLK_FREQ_FIXED){
+		operating_clk_freq = CommonParameter::input_clk_freq;
+	}
+
+	CommonParameter::operating_clk_freq = operating_clk_freq;
 //	valid_in.write(0);
 //	rd_req.write(0);
 	sc_start(5, SC_NS);		// reset 5 sycles
@@ -2125,8 +2133,8 @@ int sc_main(int argc, char *argv[]) {
 				<< e->avg_latency_cal() << " (cycles) = "
 				<< e->avg_latency_cal()/CommonParameter::operating_clk_freq << " (us) = "
 				<< e->avg_latency_cal()/CommonParameter::operating_clk_freq*1000 << " (ns)" << endl;
-
-
+		cout << "Average reconfig time = "
+				<< e->avg_reconfig_time_cal() << " (cycles) " << e->avg_reconfig_time_cal()/CommonParameter::operating_clk_freq  << " (us)" << endl;
 		double mean_packet_length;
 		if (ProcessorParameters::packet_length_type == PACKET_LENGTH_TYPE_FIXED)
 			mean_packet_length = (double)ProcessorParameters::packet_length;

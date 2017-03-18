@@ -22,6 +22,7 @@ struct GlobalVariables{
 	static int black_oos_x[500];
 	static int black_oos_y[500];
 	static int reconfig_block_counter;
+	static int reconfig_block_counter_oos;
 };
 
 /*

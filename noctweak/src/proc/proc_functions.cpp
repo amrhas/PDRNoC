@@ -329,7 +329,7 @@ Flit *create_head_flit_reconfig(int _src_x, int _src_y, int _dst_x, int _dst_y, 
 	flit_tmp->fifo_id = 0;
 	flit_tmp->vc_id = 0;
 
-	flit_tmp->type = 0;	// reconfig
+	flit_tmp->type = 2;	// reconfig
 
 	return flit_tmp;
 

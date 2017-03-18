@@ -127,7 +127,7 @@ public rc_reconfigurable{
 		//sensitive << clk.pos() << do_activate_em << do_activate_syn;
 
 		SC_THREAD(reconfig_signal_process);
-	    sensitive << reset.pos() << procSyn->do_activate_em << procSyn1->do_activate_em;
+	    sensitive << reset.pos() << clk.pos() << procSyn->do_activate_em << procSyn1->do_activate_em;
 
 	}
 	~procRCIf(){
