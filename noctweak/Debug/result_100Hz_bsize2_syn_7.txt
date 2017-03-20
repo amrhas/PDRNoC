@@ -1,0 +1,413 @@
+begin at: Mon Mar 20 19:33:57 2017
+begin at clock: 15th
+NoCTweak v1.0 --- Mon Mar 20 19:33:57 2017
+
+Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis 
+; n_tree_loads = 49; n_tree_buffer_x16 = 13; n_tree_buffer_x32 = 4; n_tree_buffer_x64 = 1
+; n_tree_wire_x1 = 37; n_tree_wire_x2 = 10; n_tree_wire_x4 = 3
+Min clock period = 712.4 (ps)
+---> max clock rate = 1403.71 (MHz)
+==============================================
+Log file: output.log
+============== SIMULATION SETTINGS ===============
+Random seed = 1490031237
+Network size = 7 x 7 (nodes)
+Platform type: SYNTHETIC
+Packet delivery type: WITHOUT ACK
+Sending ACK policy: SEND ACK OPTIMALLY
+Packet inter-arrival time distribution: EXPONENTIAL
+Fixed packet length = 10 (flits)
+Flit injection rate = 0.01 (flits/cycle/node)
+Traffic type = UNIFORM-RANDOM
+Router type: WORMHOLE-PIPELINE
+NON VC router with 8 virtual channels 
+Routing algorithm = XY DIMENSION-ORDERED
+Output channel selection: XY-ORDERED
+Packet length awareness: 1
+Buffer size = 2 (flits)
+Inter-router link length = 1000 (um)
+Pipeline type = 8
+Pipeline stages = 4
+Input voltage = 1 (V)
+Input clock frequency = 100 (MHz)
+Operating clock frequency = 100 (MHz)
+Warm_up time = 20 cycles ...
+Running simulation for 100000 cycles ...
+===================== SIMULATION DONE! =====================
+================= PERFORMANCE RESULTS =================
+total latency at [0,0]= 99076.000      ;total packets received at [0,0]= 93
+total reconfig latency at [0,0]= 0.000      ;total reconfig packets received at [0,0]= 0
+total latency at [0,1]= 101507.000      ;total packets received at [0,1]= 86
+total reconfig latency at [0,1]= 0.000      ;total reconfig packets received at [0,1]= 0
+total latency at [0,2]= 101079.000      ;total packets received at [0,2]= 104
+total reconfig latency at [0,2]= 0.000      ;total reconfig packets received at [0,2]= 0
+total latency at [0,3]= 100454.000      ;total packets received at [0,3]= 101
+total reconfig latency at [0,3]= 0.000      ;total reconfig packets received at [0,3]= 0
+total latency at [0,4]= 99612.000      ;total packets received at [0,4]= 96
+total reconfig latency at [0,4]= 0.000      ;total reconfig packets received at [0,4]= 0
+total latency at [0,5]= 99095.000      ;total packets received at [0,5]= 106
+total reconfig latency at [0,5]= 0.000      ;total reconfig packets received at [0,5]= 0
+total latency at [0,6]= 98711.000      ;total packets received at [0,6]= 91
+total reconfig latency at [0,6]= 0.000      ;total reconfig packets received at [0,6]= 0
+total latency at [1,0]= 102915.000      ;total packets received at [1,0]= 130
+total reconfig latency at [1,0]= 0.000      ;total reconfig packets received at [1,0]= 0
+total latency at [1,1]= 101477.000      ;total packets received at [1,1]= 99
+total reconfig latency at [1,1]= 0.000      ;total reconfig packets received at [1,1]= 0
+total latency at [1,2]= 100497.000      ;total packets received at [1,2]= 107
+total reconfig latency at [1,2]= 0.000      ;total reconfig packets received at [1,2]= 0
+total latency at [1,3]= 95933.000      ;total packets received at [1,3]= 87
+total reconfig latency at [1,3]= 0.000      ;total reconfig packets received at [1,3]= 0
+total latency at [1,4]= 100262.000      ;total packets received at [1,4]= 89
+total reconfig latency at [1,4]= 0.000      ;total reconfig packets received at [1,4]= 0
+total latency at [1,5]= 102329.000      ;total packets received at [1,5]= 120
+total reconfig latency at [1,5]= 0.000      ;total reconfig packets received at [1,5]= 0
+total latency at [1,6]= 99753.000      ;total packets received at [1,6]= 94
+total reconfig latency at [1,6]= 0.000      ;total reconfig packets received at [1,6]= 0
+total latency at [2,0]= 101250.000      ;total packets received at [2,0]= 99
+total reconfig latency at [2,0]= 0.000      ;total reconfig packets received at [2,0]= 0
+total latency at [2,1]= 103173.000      ;total packets received at [2,1]= 98
+total reconfig latency at [2,1]= 0.000      ;total reconfig packets received at [2,1]= 0
+total latency at [2,2]= 100401.000      ;total packets received at [2,2]= 96
+total reconfig latency at [2,2]= 0.000      ;total reconfig packets received at [2,2]= 0
+total latency at [2,3]= 100228.000      ;total packets received at [2,3]= 105
+total reconfig latency at [2,3]= 0.000      ;total reconfig packets received at [2,3]= 0
+total latency at [2,4]= 102168.000      ;total packets received at [2,4]= 109
+total reconfig latency at [2,4]= 0.000      ;total reconfig packets received at [2,4]= 0
+total latency at [2,5]= 102782.000      ;total packets received at [2,5]= 101
+total reconfig latency at [2,5]= 0.000      ;total reconfig packets received at [2,5]= 0
+total latency at [2,6]= 101467.000      ;total packets received at [2,6]= 101
+total reconfig latency at [2,6]= 0.000      ;total reconfig packets received at [2,6]= 0
+total latency at [3,0]= 98906.000      ;total packets received at [3,0]= 91
+total reconfig latency at [3,0]= 0.000      ;total reconfig packets received at [3,0]= 0
+total latency at [3,1]= 101227.000      ;total packets received at [3,1]= 115
+total reconfig latency at [3,1]= 0.000      ;total reconfig packets received at [3,1]= 0
+total latency at [3,2]= 100224.000      ;total packets received at [3,2]= 92
+total reconfig latency at [3,2]= 0.000      ;total reconfig packets received at [3,2]= 0
+total latency at [3,3]= 101541.000      ;total packets received at [3,3]= 92
+total reconfig latency at [3,3]= 0.000      ;total reconfig packets received at [3,3]= 0
+total latency at [3,4]= 98308.000      ;total packets received at [3,4]= 93
+total reconfig latency at [3,4]= 0.000      ;total reconfig packets received at [3,4]= 0
+total latency at [3,5]= 100984.000      ;total packets received at [3,5]= 102
+total reconfig latency at [3,5]= 0.000      ;total reconfig packets received at [3,5]= 0
+total latency at [3,6]= 99682.000      ;total packets received at [3,6]= 101
+total reconfig latency at [3,6]= 0.000      ;total reconfig packets received at [3,6]= 0
+total latency at [4,0]= 103652.000      ;total packets received at [4,0]= 96
+total reconfig latency at [4,0]= 0.000      ;total reconfig packets received at [4,0]= 0
+total latency at [4,1]= 101151.000      ;total packets received at [4,1]= 111
+total reconfig latency at [4,1]= 0.000      ;total reconfig packets received at [4,1]= 0
+total latency at [4,2]= 96353.000      ;total packets received at [4,2]= 91
+total reconfig latency at [4,2]= 0.000      ;total reconfig packets received at [4,2]= 0
+total latency at [4,3]= 98419.000      ;total packets received at [4,3]= 98
+total reconfig latency at [4,3]= 0.000      ;total reconfig packets received at [4,3]= 0
+total latency at [4,4]= 99330.000      ;total packets received at [4,4]= 93
+total reconfig latency at [4,4]= 0.000      ;total reconfig packets received at [4,4]= 0
+total latency at [4,5]= 100971.000      ;total packets received at [4,5]= 106
+total reconfig latency at [4,5]= 0.000      ;total reconfig packets received at [4,5]= 0
+total latency at [4,6]= 101128.000      ;total packets received at [4,6]= 105
+total reconfig latency at [4,6]= 0.000      ;total reconfig packets received at [4,6]= 0
+total latency at [5,0]= 99478.000      ;total packets received at [5,0]= 84
+total reconfig latency at [5,0]= 0.000      ;total reconfig packets received at [5,0]= 0
+total latency at [5,1]= 101104.000      ;total packets received at [5,1]= 98
+total reconfig latency at [5,1]= 0.000      ;total reconfig packets received at [5,1]= 0
+total latency at [5,2]= 99891.000      ;total packets received at [5,2]= 83
+total reconfig latency at [5,2]= 0.000      ;total reconfig packets received at [5,2]= 0
+total latency at [5,3]= 100670.000      ;total packets received at [5,3]= 92
+total reconfig latency at [5,3]= 0.000      ;total reconfig packets received at [5,3]= 0
+total latency at [5,4]= 102312.000      ;total packets received at [5,4]= 110
+total reconfig latency at [5,4]= 0.000      ;total reconfig packets received at [5,4]= 0
+total latency at [5,5]= 94567.000      ;total packets received at [5,5]= 81
+total reconfig latency at [5,5]= 0.000      ;total reconfig packets received at [5,5]= 0
+total latency at [5,6]= 101760.000      ;total packets received at [5,6]= 98
+total reconfig latency at [5,6]= 0.000      ;total reconfig packets received at [5,6]= 0
+total latency at [6,0]= 102547.000      ;total packets received at [6,0]= 92
+total reconfig latency at [6,0]= 0.000      ;total reconfig packets received at [6,0]= 0
+total latency at [6,1]= 101432.000      ;total packets received at [6,1]= 100
+total reconfig latency at [6,1]= 0.000      ;total reconfig packets received at [6,1]= 0
+total latency at [6,2]= 100440.000      ;total packets received at [6,2]= 96
+total reconfig latency at [6,2]= 0.000      ;total reconfig packets received at [6,2]= 0
+total latency at [6,3]= 100594.000      ;total packets received at [6,3]= 78
+total reconfig latency at [6,3]= 0.000      ;total reconfig packets received at [6,3]= 0
+total latency at [6,4]= 101720.000      ;total packets received at [6,4]= 95
+total reconfig latency at [6,4]= 0.000      ;total reconfig packets received at [6,4]= 0
+total latency at [6,5]= 100977.000      ;total packets received at [6,5]= 104
+total reconfig latency at [6,5]= 0.000      ;total reconfig packets received at [6,5]= 0
+total latency at [6,6]= 103178.000      ;total packets received at [6,6]= 110
+total reconfig latency at [6,6]= 0.000      ;total reconfig packets received at [6,6]= 0
+total_latency :4926715.000
+total_rx_packets :4819
+total_latency_reconfig :0.000
+total_rx_packets_reconfig :0
+avg_packets_reconfig :nan
+Average network latency = 1022.352 (cycles) = 10.224 (us) = 10223.521 (ns)
+Average reconfig time = 2.075 (cycles) 0.021 (us)
+Average network throughput = 0.001 (packets/cycle) = 0.010 (flits/cycle) = 0.984 (flits/us) = 0.001 (flits/ns)
+------------------------------------------------------
+Total number of received packets after warmup = 4819
+Simulation stop at cycle = 100000th
+=========== POWER & ENERGY RESULTS (32-bit datapath) ===========
+=========== AT 1.000V, 100.000MHz =========
+==========ACTIVITY CHECKING=========
+Buffer activity[2]: 0.004; 0.005; 0.005; 0.986
+Routing activity[2]: 0.001; 0.000; 0.013; 0.986
+--- output change = 0.003
+Arbiter activity[2]: 0.002; 0.010; 0.024; 0.965
+--- arbiter output change = 0.013
+OutCreditCounter activity[2]: 0.002; 0.022; 0.001; 0.976
+Crossbar activity: 0.049; 0.001; 0.000; 0.000; 0.000; 0.950
+-------------------------------------------------------
+Average router power (both dynamic & leakage) = 88.492 (uW); 
+--- clock power = 29.790 (uW); reg. power = 7.011 (uW); comb. power = 51.691 (uW)
+++++++ average buffer power = 20.357 (uW)
+-------- buffer clk = 10.485 (uW); buffer reg. = 2.718 (uW); buffer comb. = 7.154 (uW)
+++++++ average routing power = 5.909 (uW)
+-------- routing clk = 3.012 (uW); routing reg. = 0.126 (uW); routing comb. = 2.771 (uW)
+++++++ average switch arbitration power = 4.764 (uW)
+-------- arbitration clk = 3.012 (uW); arbitration reg. = 0.061 (uW); arbitration comb. = 1.692 (uW)
+++++++ average crossbar power = 6.648 (uW)
+++++++ average out_credit_counter power = 2.366 (uW)
+-------- credit_counter clk = 1.394 (uW); credit_counter reg. = 0.172 (uW); credit_counter comb. = 0.800 (uW)
+++++++ average link power = 26.003 (uW)
+++++++ average pipeline_datapath power = 18.566 (uW)
+-------- pipeline_datapath clk = 8.736 (uW); pipeline_datapath reg. = 3.669 (uW); pipeline_datapath comb. = 6.161 (uW)
+++++++ average pipeline_control power = 3.879 (uW)
+-------- pipeline_control clk = 3.150 (uW); pipeline_control reg. = 0.266 (uW); pipeline_control comb. = 0.462 (uW)
+==========================================
+Leakage router power = 44.734 (uW),  or 50.551% of the average power
+Inactive router power (average power at fir of 0 = router leakage + local router clock) = 70.721 (uW)
+==========================================
+Total power of all routers = 4336.090 (uW)
+Global clock tree power + PLL (don't count subtrees inside routers) = 1668.343 (uW)
+==> Total network power (routers and global clock tree) = 6004.434 (uW) = 6.004 (mW)
+Total network energy per packet = 1245.742 (pJ/packet) = 124.574 (pJ/flit)
+--- energy of all routers per packet  = 899.611 (pJ/packet) = 89.961 (pJ/flit)
+--- global clock tree energy per packet = 346.132 (pJ/packet) = 34.613 (pJ/flit)
+==========================================
+Average router energy per packet (including global clock) = 25.423 (pJ/packet/router) = 2.542 (pJ/flit/router)
+==============================================
+end at: Tue Mar 21 00:06:10 2017
+end at system clock: 201062th
+total run time = 16333.000 (seconds); or 201047.000 (native system clock cycles)
+begin at: Tue Mar 21 00:06:11 2017
+begin at clock: 0th
+NoCTweak v1.0 --- Tue Mar 21 00:06:11 2017
+
+Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis 
+; n_tree_loads = 49; n_tree_buffer_x16 = 13; n_tree_buffer_x32 = 4; n_tree_buffer_x64 = 1
+; n_tree_wire_x1 = 37; n_tree_wire_x2 = 10; n_tree_wire_x4 = 3
+Min clock period = 712.4 (ps)
+---> max clock rate = 1403.71 (MHz)
+==============================================
+Log file: output.log
+============== SIMULATION SETTINGS ===============
+Random seed = 1490047571
+Network size = 7 x 7 (nodes)
+Platform type: SYNTHETIC
+Packet delivery type: WITHOUT ACK
+Sending ACK policy: SEND ACK OPTIMALLY
+Packet inter-arrival time distribution: EXPONENTIAL
+Fixed packet length = 10 (flits)
+Flit injection rate = 0.03 (flits/cycle/node)
+Traffic type = UNIFORM-RANDOM
+Router type: WORMHOLE-PIPELINE
+NON VC router with 8 virtual channels 
+Routing algorithm = XY DIMENSION-ORDERED
+Output channel selection: XY-ORDERED
+Packet length awareness: 1
+Buffer size = 2 (flits)
+Inter-router link length = 1000 (um)
+Pipeline type = 8
+Pipeline stages = 4
+Input voltage = 1 (V)
+Input clock frequency = 100 (MHz)
+Operating clock frequency = 100 (MHz)
+Warm_up time = 20 cycles ...
+Running simulation for 100000 cycles ...
+===================== SIMULATION DONE! =====================
+================= PERFORMANCE RESULTS =================
+total latency at [0,0]= 131796.000      ;total packets received at [0,0]= 288
+total reconfig latency at [0,0]= 0.000      ;total reconfig packets received at [0,0]= 0
+total latency at [0,1]= 128195.000      ;total packets received at [0,1]= 256
+total reconfig latency at [0,1]= 0.000      ;total reconfig packets received at [0,1]= 0
+total latency at [0,2]= 140217.000      ;total packets received at [0,2]= 269
+total reconfig latency at [0,2]= 0.000      ;total reconfig packets received at [0,2]= 0
+total latency at [0,3]= 146590.000      ;total packets received at [0,3]= 299
+total reconfig latency at [0,3]= 0.000      ;total reconfig packets received at [0,3]= 0
+total latency at [0,4]= 139569.000      ;total packets received at [0,4]= 288
+total reconfig latency at [0,4]= 0.000      ;total reconfig packets received at [0,4]= 0
+total latency at [0,5]= 135106.000      ;total packets received at [0,5]= 283
+total reconfig latency at [0,5]= 0.000      ;total reconfig packets received at [0,5]= 0
+total latency at [0,6]= 142697.000      ;total packets received at [0,6]= 293
+total reconfig latency at [0,6]= 0.000      ;total reconfig packets received at [0,6]= 0
+total latency at [1,0]= 122531.000      ;total packets received at [1,0]= 254
+total reconfig latency at [1,0]= 0.000      ;total reconfig packets received at [1,0]= 0
+total latency at [1,1]= 139619.000      ;total packets received at [1,1]= 301
+total reconfig latency at [1,1]= 0.000      ;total reconfig packets received at [1,1]= 0
+total latency at [1,2]= 135555.000      ;total packets received at [1,2]= 289
+total reconfig latency at [1,2]= 0.000      ;total reconfig packets received at [1,2]= 0
+total latency at [1,3]= 134766.000      ;total packets received at [1,3]= 287
+total reconfig latency at [1,3]= 0.000      ;total reconfig packets received at [1,3]= 0
+total latency at [1,4]= 133827.000      ;total packets received at [1,4]= 295
+total reconfig latency at [1,4]= 0.000      ;total reconfig packets received at [1,4]= 0
+total latency at [1,5]= 132522.000      ;total packets received at [1,5]= 291
+total reconfig latency at [1,5]= 0.000      ;total reconfig packets received at [1,5]= 0
+total latency at [1,6]= 129807.000      ;total packets received at [1,6]= 270
+total reconfig latency at [1,6]= 0.000      ;total reconfig packets received at [1,6]= 0
+total latency at [2,0]= 142801.000      ;total packets received at [2,0]= 310
+total reconfig latency at [2,0]= 0.000      ;total reconfig packets received at [2,0]= 0
+total latency at [2,1]= 134839.000      ;total packets received at [2,1]= 287
+total reconfig latency at [2,1]= 0.000      ;total reconfig packets received at [2,1]= 0
+total latency at [2,2]= 135966.000      ;total packets received at [2,2]= 310
+total reconfig latency at [2,2]= 0.000      ;total reconfig packets received at [2,2]= 0
+total latency at [2,3]= 139270.000      ;total packets received at [2,3]= 319
+total reconfig latency at [2,3]= 0.000      ;total reconfig packets received at [2,3]= 0
+total latency at [2,4]= 140116.000      ;total packets received at [2,4]= 318
+total reconfig latency at [2,4]= 0.000      ;total reconfig packets received at [2,4]= 0
+total latency at [2,5]= 129819.000      ;total packets received at [2,5]= 263
+total reconfig latency at [2,5]= 0.000      ;total reconfig packets received at [2,5]= 0
+total latency at [2,6]= 132902.000      ;total packets received at [2,6]= 279
+total reconfig latency at [2,6]= 0.000      ;total reconfig packets received at [2,6]= 0
+total latency at [3,0]= 125695.000      ;total packets received at [3,0]= 285
+total reconfig latency at [3,0]= 0.000      ;total reconfig packets received at [3,0]= 0
+total latency at [3,1]= 127555.000      ;total packets received at [3,1]= 284
+total reconfig latency at [3,1]= 0.000      ;total reconfig packets received at [3,1]= 0
+total latency at [3,2]= 119918.000      ;total packets received at [3,2]= 266
+total reconfig latency at [3,2]= 0.000      ;total reconfig packets received at [3,2]= 0
+total latency at [3,3]= 127683.000      ;total packets received at [3,3]= 278
+total reconfig latency at [3,3]= 0.000      ;total reconfig packets received at [3,3]= 0
+total latency at [3,4]= 135507.000      ;total packets received at [3,4]= 306
+total reconfig latency at [3,4]= 0.000      ;total reconfig packets received at [3,4]= 0
+total latency at [3,5]= 133687.000      ;total packets received at [3,5]= 269
+total reconfig latency at [3,5]= 0.000      ;total reconfig packets received at [3,5]= 0
+total latency at [3,6]= 126799.000      ;total packets received at [3,6]= 269
+total reconfig latency at [3,6]= 0.000      ;total reconfig packets received at [3,6]= 0
+total latency at [4,0]= 130557.000      ;total packets received at [4,0]= 271
+total reconfig latency at [4,0]= 0.000      ;total reconfig packets received at [4,0]= 0
+total latency at [4,1]= 129618.000      ;total packets received at [4,1]= 294
+total reconfig latency at [4,1]= 0.000      ;total reconfig packets received at [4,1]= 0
+total latency at [4,2]= 128183.000      ;total packets received at [4,2]= 291
+total reconfig latency at [4,2]= 0.000      ;total reconfig packets received at [4,2]= 0
+total latency at [4,3]= 133349.000      ;total packets received at [4,3]= 274
+total reconfig latency at [4,3]= 0.000      ;total reconfig packets received at [4,3]= 0
+total latency at [4,4]= 127256.000      ;total packets received at [4,4]= 295
+total reconfig latency at [4,4]= 0.000      ;total reconfig packets received at [4,4]= 0
+total latency at [4,5]= 142779.000      ;total packets received at [4,5]= 318
+total reconfig latency at [4,5]= 0.000      ;total reconfig packets received at [4,5]= 0
+total latency at [4,6]= 132691.000      ;total packets received at [4,6]= 287
+total reconfig latency at [4,6]= 0.000      ;total reconfig packets received at [4,6]= 0
+total latency at [5,0]= 122028.000      ;total packets received at [5,0]= 278
+total reconfig latency at [5,0]= 0.000      ;total reconfig packets received at [5,0]= 0
+total latency at [5,1]= 132918.000      ;total packets received at [5,1]= 294
+total reconfig latency at [5,1]= 0.000      ;total reconfig packets received at [5,1]= 0
+total latency at [5,2]= 130247.000      ;total packets received at [5,2]= 267
+total reconfig latency at [5,2]= 0.000      ;total reconfig packets received at [5,2]= 0
+total latency at [5,3]= 136274.000      ;total packets received at [5,3]= 312
+total reconfig latency at [5,3]= 0.000      ;total reconfig packets received at [5,3]= 0
+total latency at [5,4]= 131581.000      ;total packets received at [5,4]= 295
+total reconfig latency at [5,4]= 0.000      ;total reconfig packets received at [5,4]= 0
+total latency at [5,5]= 132940.000      ;total packets received at [5,5]= 276
+total reconfig latency at [5,5]= 0.000      ;total reconfig packets received at [5,5]= 0
+total latency at [5,6]= 129995.000      ;total packets received at [5,6]= 284
+total reconfig latency at [5,6]= 0.000      ;total reconfig packets received at [5,6]= 0
+total latency at [6,0]= 133377.000      ;total packets received at [6,0]= 300
+total reconfig latency at [6,0]= 0.000      ;total reconfig packets received at [6,0]= 0
+total latency at [6,1]= 126591.000      ;total packets received at [6,1]= 287
+total reconfig latency at [6,1]= 0.000      ;total reconfig packets received at [6,1]= 0
+total latency at [6,2]= 136050.000      ;total packets received at [6,2]= 288
+total reconfig latency at [6,2]= 0.000      ;total reconfig packets received at [6,2]= 0
+total latency at [6,3]= 123929.000      ;total packets received at [6,3]= 285
+total reconfig latency at [6,3]= 0.000      ;total reconfig packets received at [6,3]= 0
+total latency at [6,4]= 131452.000      ;total packets received at [6,4]= 298
+total reconfig latency at [6,4]= 0.000      ;total reconfig packets received at [6,4]= 0
+total latency at [6,5]= 133506.000      ;total packets received at [6,5]= 272
+total reconfig latency at [6,5]= 0.000      ;total reconfig packets received at [6,5]= 0
+total latency at [6,6]= 137305.000      ;total packets received at [6,6]= 301
+total reconfig latency at [6,6]= 0.000      ;total reconfig packets received at [6,6]= 0
+total_latency :6507980.000
+total_rx_packets :14073
+total_latency_reconfig :0.000
+total_rx_packets_reconfig :0
+avg_packets_reconfig :nan
+Average network latency = 462.444 (cycles) = 4.624 (us) = 4624.444 (ns)
+Average reconfig time = 0.710 (cycles) 0.007 (us)
+Average network throughput = 0.003 (packets/cycle) = 0.029 (flits/cycle) = 2.873 (flits/us) = 0.003 (flits/ns)
+------------------------------------------------------
+Total number of received packets after warmup = 14073
+Simulation stop at cycle = 100000th
+=========== POWER & ENERGY RESULTS (32-bit datapath) ===========
+=========== AT 1.000V, 100.000MHz =========
+==========ACTIVITY CHECKING=========
+Buffer activity[2]: 0.012; 0.018; 0.018; 0.952
+Routing activity[2]: 0.004; 0.032; 0.044; 0.920
+--- output change = 0.008
+Arbiter activity[2]: 0.004; 0.084; 0.081; 0.831
+--- arbiter output change = 0.037
+OutCreditCounter activity[2]: 0.003; 0.065; 0.003; 0.928
+Crossbar activity: 0.135; 0.010; 0.001; 0.000; 0.000; 0.855
+-------------------------------------------------------
+Average router power (both dynamic & leakage) = 124.240 (uW); 
+--- clock power = 39.727 (uW); reg. power = 18.821 (uW); comb. power = 65.692 (uW)
+++++++ average buffer power = 29.497 (uW)
+-------- buffer clk = 13.713 (uW); buffer reg. = 7.196 (uW); buffer comb. = 8.588 (uW)
+++++++ average routing power = 6.110 (uW)
+-------- routing clk = 3.113 (uW); routing reg. = 0.201 (uW); routing comb. = 2.796 (uW)
+++++++ average switch arbitration power = 4.958 (uW)
+-------- arbitration clk = 3.113 (uW); arbitration reg. = 0.121 (uW); arbitration comb. = 1.724 (uW)
+++++++ average crossbar power = 10.613 (uW)
+++++++ average out_credit_counter power = 3.703 (uW)
+-------- credit_counter clk = 1.836 (uW); credit_counter reg. = 0.503 (uW); credit_counter comb. = 1.364 (uW)
+++++++ average link power = 34.275 (uW)
+++++++ average pipeline_datapath power = 30.339 (uW)
+-------- pipeline_datapath clk = 14.404 (uW); pipeline_datapath reg. = 10.056 (uW); pipeline_datapath comb. = 5.879 (uW)
+++++++ average pipeline_control power = 4.745 (uW)
+-------- pipeline_control clk = 3.547 (uW); pipeline_control reg. = 0.744 (uW); pipeline_control comb. = 0.454 (uW)
+==========================================
+Leakage router power = 44.734 (uW),  or 36.006% of the average power
+Inactive router power (average power at fir of 0 = router leakage + local router clock) = 70.721 (uW)
+==========================================
+Total power of all routers = 6087.775 (uW)
+Global clock tree power + PLL (don't count subtrees inside routers) = 1668.343 (uW)
+==> Total network power (routers and global clock tree) = 7756.118 (uW) = 7.756 (mW)
+Total network energy per packet = 551.024 (pJ/packet) = 55.102 (pJ/flit)
+--- energy of all routers per packet  = 432.499 (pJ/packet) = 43.250 (pJ/flit)
+--- global clock tree energy per packet = 118.526 (pJ/packet) = 11.853 (pJ/flit)
+==========================================
+Average router energy per packet (including global clock) = 11.245 (pJ/packet/router) = 1.125 (pJ/flit/router)
+==============================================
+end at: Tue Mar 21 00:10:17 2017
+end at system clock: 219937th
+total run time = 246.000 (seconds); or 219937.000 (native system clock cycles)
+begin at: Tue Mar 21 00:10:17 2017
+begin at clock: 31th
+NoCTweak v1.0 --- Tue Mar 21 00:10:17 2017
+
+Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis 
+; n_tree_loads = 49; n_tree_buffer_x16 = 13; n_tree_buffer_x32 = 4; n_tree_buffer_x64 = 1
+; n_tree_wire_x1 = 37; n_tree_wire_x2 = 10; n_tree_wire_x4 = 3
+Min clock period = 712.4 (ps)
+---> max clock rate = 1403.71 (MHz)
+==============================================
+Log file: output.log
+============== SIMULATION SETTINGS ===============
+Random seed = 1490047817
+Network size = 7 x 7 (nodes)
+Platform type: SYNTHETIC
+Packet delivery type: WITHOUT ACK
+Sending ACK policy: SEND ACK OPTIMALLY
+Packet inter-arrival time distribution: EXPONENTIAL
+Fixed packet length = 10 (flits)
+Flit injection rate = 0.05 (flits/cycle/node)
+Traffic type = UNIFORM-RANDOM
+Router type: WORMHOLE-PIPELINE
+NON VC router with 8 virtual channels 
+Routing algorithm = XY DIMENSION-ORDERED
+Output channel selection: XY-ORDERED
+Packet length awareness: 1
+Buffer size = 2 (flits)
+Inter-router link length = 1000 (um)
+Pipeline type = 8
+Pipeline stages = 4
+Input voltage = 1 (V)
+Input clock frequency = 100 (MHz)
+Operating clock frequency = 100 (MHz)
+Warm_up time = 20 cycles ...
+Running simulation for 100000 cycles ...

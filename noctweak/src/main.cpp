@@ -818,7 +818,14 @@ int sc_main(int argc, char *argv[]) {
 	cout << "==============================================" << endl;
 
 //	sc_clock	clk("clk", 1, 0.5, 0.5, SC_NS);
-	sc_clock	clk("clk", 1, SC_NS);
+	double operating_clk_freq;
+	if (CommonParameter::clk_freq_mode == CLK_FREQ_FIXED){
+		operating_clk_freq = CommonParameter::input_clk_freq;
+	}
+
+	CommonParameter::operating_clk_freq = operating_clk_freq;
+
+	sc_clock	clk("clk", (1/CommonParameter::operating_clk_freq)*1000, SC_NS);
 	sc_signal <bool> reset;
 
 	Platform *noc = new Platform("Platform");	// create a NoC-based platform
@@ -2080,12 +2087,7 @@ int sc_main(int argc, char *argv[]) {
 	reset.write(1);
 
 	//----------- regulate power according to the operating clk rate and voltage
-	double operating_clk_freq;
-	if (CommonParameter::clk_freq_mode == CLK_FREQ_FIXED){
-		operating_clk_freq = CommonParameter::input_clk_freq;
-	}
 
-	CommonParameter::operating_clk_freq = operating_clk_freq;
 //	valid_in.write(0);
 //	rd_req.write(0);
 	sc_start(5, SC_NS);		// reset 5 sycles

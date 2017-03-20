@@ -86,7 +86,7 @@ double SyntheticEvaluation::avg_reconfig_time_cal(){
 	}
 //	else {
 		tmp =  (double)(GlobalVariables::last_simulation_time - CommonParameter::warmup_time)/
-				((total_rx_packets_reconfig)*10);
+				((GlobalVariables::n_total_rx_packets));
 //	}
 
 	return tmp;

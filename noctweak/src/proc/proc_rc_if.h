@@ -111,8 +111,8 @@ public rc_reconfigurable{
 			//p_reconf_done.dynamic_port(rcProc[i]->reconf_done);
 		}
 
-		procSyn->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_US));
-		procSyn1->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_US));
+		procSyn->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_NS));
+		procSyn1->rc_set_delay(RC_LOAD, sc_time(ProcessorParameters::proc_reconfig_time_1, SC_NS));
 		//procEm->rc_set_delay(RC_LOAD, sc_time(5, SC_NS));
 		ctrl.add (*procSyn + *procSyn1);
 		ctrl.activate(*procSyn);
