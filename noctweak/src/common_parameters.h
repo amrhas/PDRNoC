@@ -19,7 +19,7 @@ using namespace std;
 #define SIM_MODE_PACKET 1
 
 #define SIMULATION_TIME 1000
-#define WARMUP_TIME 20
+#define WARMUP_TIME 200
 
 #define MAX_N_RX_PACKETS 1000
 
@@ -50,6 +50,7 @@ using namespace std;
 #define PLATFORM_SHAREDMEM 4
 #define PLATFORM_SPLASH2 5
 #define PLATFORM_RECONFIG 6
+#define PLATFORM_RECONFIG_EM 7
 
 #define MAX_PACKET_LENGTH 50 // used for initializing a packet
 

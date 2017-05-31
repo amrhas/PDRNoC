@@ -43,7 +43,7 @@ class SyntheticProc: public VirtualProc{
 	queue <Flit> source_queue;
 
 	// functions
-	void initialize(int x, int y);
+	void initialize(int x, int y, EmbeddedAppHashTable* app_info=NULL);
 
 	// for evaluation
 	ProcEvaluationFactors *evaluation();
@@ -61,7 +61,7 @@ class SyntheticProc: public VirtualProc{
 	SyntheticProc (sc_module_name name): VirtualProc(name){
 		// send flit
 		SC_METHOD (tx_process);
-		sensitive << reset.pos() << clk.pos();
+		sensitive << reset.pos() << clk.pos() << out_vc_buffer_rd;
 
 		// receive flit
 		SC_METHOD (rx_process);
@@ -69,7 +69,7 @@ class SyntheticProc: public VirtualProc{
 
 		// flit_out
 		SC_METHOD (flit_out_process);
-		sensitive << queue_out_valid << queue_out ;
+		sensitive << reset.pos() << clk.pos();
 
 	}
 
@@ -78,19 +78,19 @@ class SyntheticProc: public VirtualProc{
 			mProcIF(procIF){
 		// send flit
 		SC_METHOD (tx_process);
-		sensitive << reset.pos() << clk.pos();
+		sensitive << reset.pos() << clk.pos();// << out_vc_buffer_rd.pos();
 
 		// receive flit
 		SC_METHOD (rx_process);
 		sensitive << reset.pos() << clk.pos();
 
 		// flit_out
-		SC_METHOD (flit_out_process);
-		sensitive << queue_out_valid << queue_out ;
+	    SC_METHOD (flit_out_process);
+		sensitive << reset.pos() << clk.pos();
 
 		// reset reconfig  proc signal
 		SC_METHOD (reset_reconfig_process);
-		sensitive  <<  clk.pos()  << reset.pos() ;
+		sensitive  <<  clk.pos()  << reset.pos();
 
 		// flit_out
 		SC_METHOD (reconfig_count_process);
@@ -108,6 +108,8 @@ class SyntheticProc: public VirtualProc{
 	double min_latency;
 	double total_latency_reconfig;
 	int received_packets_count_reconfig;
+
+	bool incremented;
 
 	bool reconfig_rc;
 	bool reconfig_rc_ack;

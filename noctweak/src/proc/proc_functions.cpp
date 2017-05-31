@@ -311,7 +311,7 @@ Flit *create_head_flit_fixed_dest(int _src_x, int _src_y, int _dst_x, int _dst_y
 }
 
 /*
- * fixed destination
+ * reconfig flit
  */
 Flit *create_head_flit_reconfig(int _src_x, int _src_y, int _dst_x, int _dst_y, int _time){
 	Flit *flit_tmp = new Flit();
@@ -330,6 +330,31 @@ Flit *create_head_flit_reconfig(int _src_x, int _src_y, int _dst_x, int _dst_y, 
 	flit_tmp->vc_id = 0;
 
 	flit_tmp->type = 2;	// reconfig
+
+	return flit_tmp;
+
+}
+
+/*
+ * fixed reconfig
+ */
+Flit *create_head_flit_fixed_reconfig(int _src_x, int _src_y, int _dst_x, int _dst_y, int _time){
+	Flit *flit_tmp = new Flit();
+
+	flit_tmp->head = 1;
+	flit_tmp->tail = 0;
+	flit_tmp->src_x = _src_x;
+	flit_tmp->src_y = _src_y;
+
+	flit_tmp->dst_x = _dst_x;
+	flit_tmp->dst_y = _dst_y;
+
+	flit_tmp->payload = 0xFADE;
+	flit_tmp->injected_time = _time;
+	flit_tmp->fifo_id = 0;
+	flit_tmp->vc_id = 0;
+
+	flit_tmp->type = 2;	// data
 
 	return flit_tmp;
 

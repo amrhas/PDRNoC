@@ -10,8 +10,7 @@ Platform::Platform(sc_module_name name_):
 //				cout << "Binding " << label << "..." << endl;
 
 				tile[x][y] = new Tile(label.data(),x ,y);
-
-				tile[x][y]->proc->initialize(x, y);
+					tile[x][y]->proc->initialize(x, y, &EmbeddedParameters::app_info);
 				tile[x][y]->router->initialize(x, y);
 
 				// initialize all constants

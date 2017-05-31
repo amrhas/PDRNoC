@@ -10,12 +10,14 @@
 /*
  * initialize
  */
-void procRCIf::initialize(int x, int y){
+void procRCIf::initialize(int x, int y, EmbeddedAppHashTable* app_info){
 	local_x = x;
 	local_y = y;
 	//procEm->initialize(x,y);
-    procSyn->initialize(x,y);
-    procSyn1->initialize(x,y);
+    procSyn->initialize(x,y, app_info);
+    procSyn1->initialize(x,y, app_info);
+    procEm->initialize(x,y, &EmbeddedParameters::app_info );
+    procEm1->initialize(x,y, &EmbeddedParameters::app_info1 );
 	return;
 }
 
@@ -28,13 +30,13 @@ ProcEvaluationFactors *procRCIf::evaluation(){
 
 ProcEvaluationFactors *proc_factors = new ProcEvaluationFactors();
 
-proc_factors->n_injected_packets = procSyn1->evaluation()->n_injected_packets + procSyn->evaluation()->n_injected_packets ; //+ procEm->evaluation()->n_injected_packets;
-proc_factors->n_received_packets = procSyn1->evaluation()->n_received_packets + procSyn->evaluation()->n_received_packets ;//+ procEm->evaluation()->n_received_packets;
-proc_factors->total_latency = procSyn1->evaluation()->total_latency + procSyn->evaluation()->total_latency;// + procEm->evaluation()->total_latency;
-proc_factors->max_latency = procSyn1->evaluation()->max_latency + procSyn->evaluation()->max_latency ;//+ procEm->evaluation()->max_latency;
-proc_factors->min_latency = procSyn1->evaluation()->min_latency + procSyn->evaluation()->min_latency;// + procEm->evaluation()->min_latency;
-proc_factors->total_latency_reconfig = procSyn1->evaluation()->total_latency_reconfig + procSyn->evaluation()->total_latency_reconfig;// + procEm->evaluation()->total_latency_reconfig;
-proc_factors->n_received_packets_reconfig = procSyn1->evaluation()->n_received_packets_reconfig + procSyn->evaluation()->n_received_packets_reconfig; // + procEm->evaluation()->n_received_packets_reconfig;
+proc_factors->n_injected_packets = procSyn1->evaluation()->n_injected_packets + procSyn->evaluation()->n_injected_packets + procEm1->evaluation()->n_injected_packets + procEm->evaluation()->n_injected_packets;
+proc_factors->n_received_packets = procSyn1->evaluation()->n_received_packets + procSyn->evaluation()->n_received_packets + procEm1->evaluation()->n_received_packets + procEm->evaluation()->n_received_packets;
+proc_factors->total_latency = procSyn1->evaluation()->total_latency + procSyn->evaluation()->total_latency + procEm1->evaluation()->total_latency + procEm->evaluation()->total_latency;
+proc_factors->max_latency = procSyn1->evaluation()->max_latency + procSyn->evaluation()->max_latency + procEm1->evaluation()->max_latency + procEm->evaluation()->max_latency;
+proc_factors->min_latency = procSyn1->evaluation()->min_latency + procSyn->evaluation()->min_latency + procEm1->evaluation()->min_latency + procEm->evaluation()->min_latency;
+proc_factors->total_latency_reconfig = procSyn1->evaluation()->total_latency_reconfig + procSyn->evaluation()->total_latency_reconfig + procEm1->evaluation()->total_latency_reconfig + procEm->evaluation()->total_latency_reconfig;
+proc_factors->n_received_packets_reconfig = procSyn1->evaluation()->n_received_packets_reconfig + procSyn->evaluation()->n_received_packets_reconfig + procEm1->evaluation()->n_received_packets_reconfig + procEm->evaluation()->n_received_packets_reconfig;
 
 	return proc_factors;
 }
@@ -66,7 +68,7 @@ void procRCIf::reconfig_signal_process(){
 				for(int i=0; i<NUM_RC_PROC; i++){
 				  rcProc[i]->reconf_done.write(0);
 				}
-				wait(200, SC_NS);
+				wait(50, SC_US);
 				ctrl.unload(*procSyn);
 				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): deactivated Synthetic" << endl;
 				ctrl.activate(*procSyn1);
@@ -81,7 +83,7 @@ void procRCIf::reconfig_signal_process(){
 				for(int i=0; i<NUM_RC_PROC; i++){
 				  rcProc[i]->reconf_done.write(0);
 				}
-				wait(200, SC_NS);
+				wait(50, SC_US);
 				ctrl.unload(*procSyn1);
 				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): deactivated Synthetic1" << endl;
 				ctrl.activate(*procSyn);
@@ -92,6 +94,35 @@ void procRCIf::reconfig_signal_process(){
 				wait();
 			}
 
+			if(procEm->do_activate_syn == 1 && active_module == EM ){
+				for(int i=0; i<NUM_RC_PROC; i++){
+				  rcProc[i]->reconf_done.write(0);
+				}
+				wait(50, SC_US);
+				ctrl.unload(*procEm);
+				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): deactivated Embedded" << endl;
+				ctrl.activate(*procEm1);
+				currentProc=procEm1;
+				currentProc->reconf_done.write(1);
+				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): activated Embedded1" << endl;
+				active_module = EM1;
+				wait();
+			}
+
+			if( procEm1->do_activate_syn == 1 && active_module == EM1 ){
+				for(int i=0; i<NUM_RC_PROC; i++){
+				  rcProc[i]->reconf_done.write(0);
+				}
+				wait(50, SC_US);
+				ctrl.unload(*procEm1);
+				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): deactivated Embedded1" << endl;
+				ctrl.activate(*procEm);
+				currentProc=procEm;
+				currentProc->reconf_done.write(1);
+				cout << sc_time_stamp() << "\t[" << currentProc->local_x << "]["  << currentProc->local_y << "]procRCIf::change_module(): activated Embedded" << endl;
+				active_module = EM;
+				wait();
+			}
 			wait();
 		}
 	}

@@ -20,7 +20,7 @@
 
 #include "synthetic_proc.h"
 
-void SyntheticProc::initialize(int x, int y) {
+void SyntheticProc::initialize(int x, int y, EmbeddedAppHashTable* app_info) {
 	local_x = x;
 	local_y = y;
 }
@@ -69,13 +69,9 @@ int temp=0;
 		// If we sent a flit to the local router on the previous cycle:
 		// we decrement the number of remaining entry in the buffer of VC 0
 		// and we remove the flit from the local queue
-		//if (out_vc_buffer_rd.read() != 1 && (source_queue.size() > 0)) {// if local port of router is not full
-			//count_minus[0].write(1);
-		//	source_queue.pop();
-		//}
 
 		// Generate packets
-		int current_time = (int) (sc_time_stamp().to_double() / 1000);
+		int current_time = (int) ((sc_time_stamp().to_double()/1000)/(1000/CommonParameter::operating_clk_freq));
 		if (current_time >= next_injection_time ) {
 
 			// create a new packet;
@@ -92,24 +88,31 @@ int temp=0;
 					head_flit->dst_x = 0;
 					head_flit->dst_y = 0;
 					reconfig_rc_ack = 1;
+					queue_out_valid.write(0);
+					queue_out.write(Flit());
+					//reconfig_rc=0;
+					while (!source_queue.empty()) {
+						source_queue.pop();
+					}
 					//reconfig_rc=0;
 					int current_packet_length = ProcessorParameters::packet_length_reconfig;
 
-					Packet *packet = new Packet(head_flit, current_packet_length);
+					Packet *packet = new Packet(head_flit, 5);
 					injected_packet_count += 1;
 					//GlobalVariables::reconfig_block_counter += 1;
-					cout << local_x<< local_y<<"@ cycle " << sc_time_stamp().to_double()/1000
+					cout << local_x<< local_y<<"@ cycle " << sc_time_stamp().to_double()/CommonParameter::operating_clk_freq
 							<< ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
 
 					// push all its flits to the source_queue
-					for (int i = 0; i < current_packet_length; i++) {
-						if(source_queue.size() < 1024){
+					for (int i = 0; i < 5; i++) {
+						//if(source_queue.size() < 1024){
 							source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
 							//cout << "@ cycle " << sc_time_stamp().to_double()/1000
 							//  << ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
-						}
+						//}
 					}
-
+					//if(out_vc_buffer_rd.read() == 0 )
+					//incremented=true;
 					delete packet;
 				}
 				else if(((head_flit->dst_x != local_x)
@@ -126,20 +129,24 @@ int temp=0;
 					  }
 					}
 					if(!black_found){
-					Packet *packet = new Packet(head_flit, current_packet_length);
+					Packet *packet = new Packet(head_flit, 6);
 					injected_packet_count += 1;
 					GlobalVariables::reconfig_block_counter += 1;
-							cout << "@ cycle " << sc_time_stamp().to_double()/1000
+							cout << "@ cycle " << sc_time_stamp().to_double()/CommonParameter::operating_clk_freq
 									<< ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
 
 					// push all its flits to the source_queue
-					for (int i = 0; i < current_packet_length; i++) {
-						if(source_queue.size() < 1024){
+					for (int i = 0; i < 6; i++) {
+						///if(source_queue.size() < 1024){
 							source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
 							//cout << "@ cycle " << sc_time_stamp().to_double()/1000
 							//  << ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
-						}
+						//}
 					}
+					GlobalVariables::black_oos_x[GlobalVariables::reconfig_block_counter_oos]=head_flit->dst_x;//local_x;
+					GlobalVariables::black_oos_y[GlobalVariables::reconfig_block_counter_oos]=head_flit->dst_y;//local_y;//
+					GlobalVariables::reconfig_block_counter_oos++;
+					cout << "reconfig_block_counter_oos" << GlobalVariables::reconfig_block_counter_oos << endl;
 
 					delete packet;
 				}
@@ -152,7 +159,7 @@ int temp=0;
 				//			cout << "temp = " << temp << endl;
 
 				}
-				//delete (head_flit);
+				delete (head_flit);
 			}
 			else {
 				switch (SyntheticParameters::traffic_type) {
@@ -250,6 +257,8 @@ int temp=0;
 
 				}
 				}
+				delete (head_flit);
+
 			}
 
 				//			cout << "temp = " << temp << endl;
@@ -258,25 +267,52 @@ int temp=0;
 					temp = 1;
 				next_injection_time = current_time + temp;
 
-				delete [] (head_flit);
 			//}
 		} else {
 			// do nothing
 		}
 //		}
 
-	    if (source_queue.size() > 0 && out_vc_buffer_rd.read() != 1) {
+	    if ( source_queue.size() > 0) {
 			queue_out_valid.write(1);
-			//cout << sc_time_stamp() << name() << "Syn current_packet_length = " << endl;
-
+			//incremented = false;
 			Flit flit_tmp = source_queue.front();
+			//cout << sc_time_stamp() << name() << "Syn current_packet_length = " << flit_tmp.packet_length << endl;
+			bool black_found =false;
+			while(!black_found )
+			{
+				for(int i=0 ; i< ProcessorParameters::block_reconfig_number ;i++){
+			  if( GlobalVariables::black_oos_y[i] == flit_tmp.dst_y && GlobalVariables::black_oos_x[i] == flit_tmp.dst_x ){
+				  black_found = true;
+				  //cout <<local_x << local_y << "@ cycle " << sc_time_stamp().to_double()/1000
+					// << ": PE (" << head_flit->dst_x << ", "
+					 //<< head_flit->dst_y << ") reject a reconfig packet from" << local_x << local_y<< endl;
+			  }
+			}
+				if(flit_tmp.type == 2 )
+					black_found = true;
+				else if(black_found){
+					source_queue.pop();
+					flit_tmp = source_queue.front();
+					black_found=false;
+				}
+				else
+					black_found = true;
+			}
+
 			flit_tmp.vc_id = 0;
 			queue_out.write(flit_tmp);
-			source_queue.pop();
+
+			//valid_out.write(1);
+			//flit_out.write(flit_tmp);
 		} else {
 			queue_out_valid.write(0);
 			queue_out.write(Flit());
+			//valid_out.write(0);
+		    //flit_out.write(Flit());
 		}
+
+
 	}
 }
 
@@ -284,17 +320,29 @@ int temp=0;
  * flit_out
  */
 void SyntheticProc::flit_out_process() {
-	if (out_vc_buffer_rd.read() != 1) {
+	if (reset.read()) {	// if reset
+		valid_out.write(0);
+		flit_out.write(Flit());
+		incremented = false;
+	}
+	else if (out_vc_buffer_rd.read() != 1 && reconfig_en != 1) {
 		//cout << sc_time_stamp() << name() << "Out Syn current_packet_length = " << endl;
-
+		incremented = true;
 		valid_out.write(queue_out_valid.read());
 		flit_out.write(queue_out.read());
 		//queue_out.pop();
+		if ( (source_queue.size() > 0)) {// if local port of router is not full
+			//count_minus[0].write(1);
+			source_queue.pop();
+			//incremented = true;
+		}
 	} else {
+		incremented = false;
 		valid_out.write(0);
 		flit_out.write(Flit());
 	}
 }
+
 
 /*
  * flit receive process
@@ -322,8 +370,9 @@ void SyntheticProc::rx_process() {
 			int vc_id = flit_in.read().vc_id;
 			// always read if having flit coming
 
-			int current_time = (int) (sc_time_stamp().to_double() / 1000);
+			int current_time = (int) ((sc_time_stamp().to_double()/1000)/(1000/CommonParameter::operating_clk_freq) );
 			if (current_time >= CommonParameter::warmup_time) {
+				in_vc_buffer_rd.write(1);
 
 				Flit rx_flit = flit_in.read();
 				if (rx_flit.head) {
@@ -368,7 +417,7 @@ void SyntheticProc::rx_process() {
 							if (CommonParameter::sim_mode == SIM_MODE_PACKET) {
 						if(was_reconfig[vc_id] && !(local_y ==0 && local_x ==0))
 
-
+							//GlobalVariables::n_total_rx_packets += 1;
 							if (GlobalVariables::n_total_rx_packets
 									>= CommonParameter::max_n_rx_packets) {
 								GlobalVariables::last_simulation_time =
@@ -387,12 +436,10 @@ void SyntheticProc::rx_process() {
 								sc_stop();	// stop simulation
 							}
 						}
-						if( was_reconfig[vc_id] && !(local_y ==0 && local_x ==0) && reconfig_en ==0 )
+						if( was_reconfig[vc_id] && !(local_y ==0 && local_x ==0) && reconfig_en ==0  )
 						{
-							GlobalVariables::black_oos_x[GlobalVariables::reconfig_block_counter_oos]=local_x;
-							GlobalVariables::black_oos_y[GlobalVariables::reconfig_block_counter_oos]=local_y;
-							GlobalVariables::reconfig_block_counter_oos++;
-							cout << local_x << local_y << "reconfig_block_counter_oos" << GlobalVariables::reconfig_block_counter_oos << endl;
+							cout << local_x << local_y << "rec_recon pck" << endl;
+							//reconfig_rc = 0;
 
 							was_reconfig[vc_id] = 0;
 							total_latency_reconfig += packet_latency;
@@ -402,6 +449,7 @@ void SyntheticProc::rx_process() {
 						}
 						else if(was_reconfig[vc_id] && (local_y ==0 && local_x ==0)){
 							GlobalVariables::reconfig_block_counter -= 1;
+							//reconfig_rc = 0;
 							was_reconfig[vc_id] = 0;
 							total_latency_reconfig += packet_latency;
 							//received_packets_count_reconfig += 1;
@@ -432,7 +480,7 @@ void SyntheticProc::reset_reconfig_process(){
 	if (reset.read()) {
 		do_activate_em = false;
 	} else {
-		if(reconfig_en == 1){
+		if(reconfig_en == 1 ){
 			do_activate_em = true;
 		}
 		else

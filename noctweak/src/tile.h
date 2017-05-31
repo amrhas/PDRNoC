@@ -75,6 +75,7 @@ public:
 	sc_signal <Flit> rx_flit_in_ni;
 //	sc_signal <bool> rx_in_full[MAX_N_VCS];
 	sc_signal <bool> rx_in_vc_buffer_rd_ni;	// only consider buffer_rd[0]; is processor read an input flit?
+	sc_signal <bool> rx_in_vaild_ni;	// only consider buffer_rd[0]; is processor read an input flit?
 
 	// setup don't-care signals
 	void initialize() {
@@ -109,7 +110,7 @@ public:
 			switch (ProcessorParameters::packet_delivery_type) {
 						case DELIVERY_WITHOUT_ACK:
 //							cout << "Binding Embedded Proc ..." << endl;
-							//proc = new EmbeddedProc("Embedded_Proc");
+							proc = new EmbeddedProc("Embedded_Proc");
 							break;
 						case DELIVERY_WITH_ACK:
 							//proc = new EmbeddedWithACKProc("Embedded_With_ACK_Proc");
@@ -118,7 +119,8 @@ public:
 					}
 					break;
             }
-			case (PLATFORM_RECONFIG):{
+			case (PLATFORM_RECONFIG):
+			case (PLATFORM_RECONFIG_EM):{
 						proc = new procRCIf("Reconfig_Proc");
 //proc = new SyntheticProc("Synthetic_Proc");
 			//CommonParameter::platform_type = PLATFORM_SYNTHETIC;
@@ -153,6 +155,7 @@ public:
 		proc_ni->p_flit_in(rx_flit_in_ni);
 		//for (int k=0; k<MAX_N_VCS; k++){
 			proc_ni->p_buff_out_full(rx_in_vc_buffer_rd_ni);
+			proc_ni->p_vaild_out_buff(rx_in_vaild_ni);
 		//}
 
 		proc->clk(clk);
@@ -161,6 +164,7 @@ public:
 		proc->flit_out(rx_flit_in_ni);
 		//for (int k=0; k<MAX_N_VCS; k++){
 			proc->out_vc_buffer_rd(rx_in_vc_buffer_rd_ni);
+			proc->out_buf_vaild_in(rx_in_vaild_ni);
 		//}
 		proc->valid_in(tx_valid_out_ni);
 		proc->flit_in(tx_flit_out_ni);

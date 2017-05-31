@@ -326,6 +326,8 @@ void command_line_parser(int argc, char *argv[]){
 					CommonParameter::platform_type = PLATFORM_SHAREDMEM;
 				else if (!platform_type.compare("reconfig"))
 					CommonParameter::platform_type = PLATFORM_RECONFIG;
+				else if (!platform_type.compare("reconfig_em"))
+					CommonParameter::platform_type = PLATFORM_RECONFIG_EM;
 				else {
 					cout << "ERROR: Invalid platform!" << endl;
 					exit (0);
@@ -365,6 +367,9 @@ void command_line_parser(int argc, char *argv[]){
 			}
 			else if (!option.compare("-appfile")){
 				EmbeddedParameters::app_filename = argv[++i];
+			}
+			else if (!option.compare("-appfile1")){
+				EmbeddedParameters::app_filename1 = argv[++i];
 			}
 /*
 			else if (!option.compare("-xmlfile")){	// XML application file for AsAP
@@ -461,7 +466,8 @@ void show_help(){
 		 << "         option = autoindust.app:	E3S auto-indust benchmark with 24 tasks\n"
 		 << "         option = consumer.app:	E3S consumer benchmark with 12 tasks\n"
 		 << "         option = telecom.app:		E3S telecom benchmark with 30 tasks\n"
-		 << "      -mapping [option]:	mapping algorithm used to map the task graph to the processor array\n"
+	     << "      -appfile1 [option]:	application task communication graph used in the simulation.\n"
+	     << "      -mapping [option]:	mapping algorithm used to map the task graph to the processor array\n"
 		 << "         option = random:	random mapping\n"
 		 << "         option = nmap:	near-optimal mapping using the NMAP algorithm\n\n";
 

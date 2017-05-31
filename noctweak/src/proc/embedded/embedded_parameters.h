@@ -42,11 +42,19 @@ typedef map<int, TileInfo> EmbeddedAppHashTable;
 struct EmbeddedParameters{
 	static char *app_folder;
 	static char *app_filename;
+	static char *app_filename1;
 
 	static int mapping_algorithm;
 
+	static int dst_x;
+	static int dst_y;
+
 	static double max_req_bandwidth;		// max required bandwidth on all links
+	static double max_req_bandwidth1;		// max required bandwidth on all links
+
 	static EmbeddedAppHashTable app_info;	// overall application info after task mapping
+	static EmbeddedAppHashTable app_info1;	// overall application info after task mapping
+
 };
 
 #endif /* EMBEDDED_PARAMETERS_H_ */

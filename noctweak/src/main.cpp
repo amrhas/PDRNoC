@@ -28,6 +28,7 @@
 #include "proc/embedded/embedded_app_info.h"
 #include "proc/synthetic/synthetic_evaluation.h"
 #include "proc/embedded/embedded_evaluation.h"
+
 #include "proc/proc_noc_int.h"
 
 #include "router/wormhole_pipeline/wormhole_pipeline_power_est.h"
@@ -146,9 +147,12 @@ int SyntheticParameters::hotspot_percentage = HOTSPOT_PERCENTAGE;
 //---------- Embedded default
 char *EmbeddedParameters::app_folder = "../src/embedded_app_graphs";
 char *EmbeddedParameters::app_filename = "80211arx.app";
+char *EmbeddedParameters::app_filename1 = "80211arx.app";
+
 int EmbeddedParameters::mapping_algorithm = MAPPING_RANDOM;
 double EmbeddedParameters::max_req_bandwidth = 0;
 EmbeddedAppHashTable EmbeddedParameters::app_info = EmbeddedAppHashTable();
+EmbeddedAppHashTable EmbeddedParameters::app_info1 = EmbeddedAppHashTable();
 
 //---------- Power Estimation
 int CommonParameter::cmos_process = 65;
@@ -389,11 +393,11 @@ int sc_main(int argc, char *argv[]) {
 	log_file.open(CommonParameter::log_filename);
 	assert(log_file.is_open());
 
-	cout << "NoCTweak v1.0 --- " << asctime(ptm) << endl;
-	log_file << "NoCTweak v1.0 --- " << asctime(ptm);
+	cout << "NoCTweakRC v1.0 --- " << asctime(ptm) << endl;
+	log_file << "NoCTweakRC v1.0 --- " << asctime(ptm);
 
-	cout << "Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis " << endl;
-	log_file << "Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis " << endl << endl;
+	//cout << "Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis " << endl;
+	//log_file << "Copyright (c) 2009-2012 by Anh Tran and Bevan Baas at the VCL Lab, UC Davis " << endl << endl;
 
 	log_file << "===================== CONFIGURATIONS ===================== " << endl;
 	for (int i=0; i<argc; i++){
@@ -417,6 +421,30 @@ int sc_main(int argc, char *argv[]) {
 		EmbeddedParameters::max_req_bandwidth =
 				embedded_app_info->max_req_bandwidth;
 		EmbeddedParameters::app_info = embedded_app_info->app_info;
+
+		delete embedded_app_info;
+	}
+	else if (CommonParameter::platform_type == PLATFORM_RECONFIG_EM ){
+		string app_filename = "";
+		app_filename = app_filename + EmbeddedParameters::app_folder + "/"
+				+ EmbeddedParameters::app_filename;
+		EmbeddedAppInfo *embedded_app_info = new EmbeddedAppInfo(
+				app_filename.data());
+		string app_filename1 = "";
+		app_filename1 = app_filename + EmbeddedParameters::app_folder + "/"
+						+ EmbeddedParameters::app_filename1;
+				EmbeddedAppInfo *embedded_app_info1 = new EmbeddedAppInfo(
+						app_filename1.data());
+
+		CommonParameter::dim_x = (embedded_app_info->dim_x > embedded_app_info1->dim_x ? embedded_app_info->dim_x : embedded_app_info1->dim_x );
+		CommonParameter::dim_y = (embedded_app_info->dim_y > embedded_app_info1->dim_y ? embedded_app_info->dim_y : embedded_app_info1->dim_y );
+
+		EmbeddedParameters::max_req_bandwidth =
+				(embedded_app_info->max_req_bandwidth > embedded_app_info1->max_req_bandwidth ? embedded_app_info->max_req_bandwidth : embedded_app_info1->max_req_bandwidth );
+		EmbeddedParameters::app_info = embedded_app_info->app_info;
+		EmbeddedParameters::app_info1 = embedded_app_info1->app_info;
+
+		delete embedded_app_info1;
 
 		delete embedded_app_info;
 	}
@@ -857,7 +885,7 @@ int sc_main(int argc, char *argv[]) {
 
 //	AsAPProc *asap_proc[MAX_DIM][MAX_DIM];
 
-	//EmbeddedProc *embedded_proc[MAX_DIM][MAX_DIM];
+	EmbeddedProc *embedded_proc[MAX_DIM][MAX_DIM];
 	//EmbeddedWithACKProc *embedded_ack_proc[MAX_DIM][MAX_DIM];
 
 	procRCIf *reconfig_proc[MAX_DIM][MAX_DIM];
@@ -911,6 +939,7 @@ int sc_main(int argc, char *argv[]) {
 			for (int y=0; y<CommonParameter::dim_y; y++){
 				if (RouterParameter::router_type == ROUTER_WORMHOLE){
 //					wh_router[x][y] = (WormholeRouter*) noc->tile[x][y]->router;
+					RouterParameter::n_VCs = 1;
 				}
 				else if (RouterParameter::router_type == ROUTER_VC){
 
@@ -966,6 +995,8 @@ int sc_main(int argc, char *argv[]) {
 				}
 				else if (RouterParameter::router_type == ROUTER_WORMHOLE_PIPELINE){
 					wh_pipeline[x][y] = (WormholePipeline*)noc->tile[x][y]->router;
+					RouterParameter::n_VCs = 1;
+
 				}
 
 
@@ -1980,14 +2011,14 @@ int sc_main(int argc, char *argv[]) {
 				// Embedded processor signals
 				else if (CommonParameter::platform_type == PLATFORM_EMBEDDED){
 					if (ProcessorParameters::packet_delivery_type == DELIVERY_WITHOUT_ACK){
-					//	embedded_proc[x][y] = (EmbeddedProc*) noc->tile[x][y]->proc;
+					embedded_proc[x][y] = (EmbeddedProc*) noc->tile[x][y]->proc;
 					}
 					else if (ProcessorParameters::packet_delivery_type == DELIVERY_WITH_ACK){
 					//	embedded_ack_proc[x][y] = (EmbeddedWithACKProc*) noc->tile[x][y]->proc;
 					}
 				}
 
-				else if (CommonParameter::platform_type == PLATFORM_RECONFIG){
+				else if (CommonParameter::platform_type == PLATFORM_RECONFIG || CommonParameter::platform_type == PLATFORM_RECONFIG_EM){
 				    reconfig_proc[x][y] = (procRCIf*) noc->tile[x][y]->proc;
 
 				    label = "(" + int_to_str(x) + ")(" + int_to_str(y) + ")_"
@@ -2057,6 +2088,9 @@ int sc_main(int argc, char *argv[]) {
 		case PLATFORM_RECONFIG:
 			platform_type = "RECONFIG";
 			break;
+		case PLATFORM_RECONFIG_EM:
+			platform_type = "RECONFIG EMBEDDED";
+			break;
 		default:;
 	}
 	cout << "Platform type: " << platform_type << endl;
@@ -2073,7 +2107,7 @@ int sc_main(int argc, char *argv[]) {
 	else if (CommonParameter::platform_type == PLATFORM_ASAP){
 //		show_asap_settings();
 	}
-	else if (CommonParameter::platform_type == PLATFORM_RECONFIG) {
+	else if (CommonParameter::platform_type == PLATFORM_RECONFIG || CommonParameter::platform_type == PLATFORM_RECONFIG_EM) {
 		//show_reconfig_setting();
 		show_synthetic_settings();
 		show_embedded_settings();
@@ -2100,7 +2134,7 @@ int sc_main(int argc, char *argv[]) {
 
 	if (CommonParameter::sim_mode == SIM_MODE_CYCLE){
 		cout << "Running simulation for " << CommonParameter::simulation_time << " cycles ..." << endl;
-		sc_start(CommonParameter::simulation_time, SC_NS);
+		sc_start(CommonParameter::simulation_time*(1000/CommonParameter::operating_clk_freq), SC_NS);
 	}
 	else{
 		cout << "Running simulation until receiving at least " << CommonParameter::max_n_rx_packets << " packets after warming up..." << endl;

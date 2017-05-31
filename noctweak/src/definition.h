@@ -15,6 +15,7 @@
 #include <string.h>
 #include "common_parameters.h"
 #include "router/router_parameters.h"
+#include "proc/embedded/embedded_parameters.h"
 
 using namespace std;
 

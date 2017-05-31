@@ -71,6 +71,8 @@ class proc_noc_interface: public sc_module{
 
 	// Signal to processor saying saying that this interface has read an input flit on the given VC (the router can free it)
 	sc_out <bool> p_buff_out_full;
+	// Signal to processor saying saying that this interface has read an input flit on the given VC (the router can free it)
+	sc_out <bool> p_vaild_out_buff;
 
 	sc_signal <int> out_vc_remain[MAX_N_VCS];		// keep trace of number of idle entries of each output VC
 	sc_signal <int> out_vc_remain_reg[MAX_N_VCS];

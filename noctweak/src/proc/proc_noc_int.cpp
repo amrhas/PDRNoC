@@ -52,19 +52,27 @@ void proc_noc_interface::tx_process_out_buff() {
 		for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
 			count_minus[vo].write(0);
 		}
+
 	} else {	// positive clock edge
+		//for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
+
 		if (out_vc_remain[0].read() >= 1 && (out_buffer.size() > 0) ) {// if local port of router is not full
-			count_minus[0].write(1);
 			Flit flit_tmp = out_buffer.front();
 			out_buf_out_buffer_rd.write(1);
+			count_minus[0].write(1);
 			r_valid_out.write(1);
 			r_flit_out.write(flit_tmp);
+			//break;
 		} else {
-			count_minus[0].write(0);
+	//		count_minus[0].write(0);
 			out_buf_out_buffer_rd.write(0);
+			//for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
+				count_minus[0].write(0);
+			//}
 			r_valid_out.write(0);
 			r_flit_out.write(Flit());
 		}
+		//}
 	}
 }
 
@@ -104,7 +112,7 @@ void proc_noc_interface::rx_process_in_buff() {
 				in_count_minus[vo].write(0);
 			}
 	} else {	// if positive clk
-		if (p_out_vc_buffer_rd.read() == 1 && in_vc_remain[0].read() > 0 && in_buffer.size() > 1) {
+		if (p_out_vc_buffer_rd.read() == 1 && in_vc_remain[0].read() > 0 && in_buffer.size() >= 1) {
 			in_count_minus[0].write(1);
 			in_buf_out_buffer_rd.write(1);
 		}
@@ -161,6 +169,14 @@ void proc_noc_interface::in_buffer_process() {
 				for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
 					r_in_vc_buffer_rd[vi].write(0);
 				}
+				Flit tmp = in_buffer.front();
+				int vc_id = tmp.vc_id;
+				r_interface_buffer_rd[vc_id].write(1);// always read if having flit coming
+
+				for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
+					if (vi != vc_id)
+						r_interface_buffer_rd[vi].write(0);
+				}
 			}
 			else{
 				Flit tmp = r_flit_in.read();
@@ -173,9 +189,9 @@ void proc_noc_interface::in_buffer_process() {
 				in_buffer.push(tmp);
 			}
 			in_buff_empty.write(in_buffer.empty());
-			for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
-				r_interface_buffer_rd[vi].write(0);
-			}
+			//for (int vi = 0; vi < RouterParameter::n_VCs; vi++) {
+			//	r_interface_buffer_rd[vi].write(0);
+			//}
 		} else if (r_valid_in.read()) {
 
 			if (in_buffer.size() == buffer_size) {
@@ -206,7 +222,7 @@ void proc_noc_interface::in_buffer_process() {
 				cerr << "ERROR: read from an EMPTY in buffer: " << name() << endl;				exit(-1);
 			}
 
-			if (in_buffer.size() >= buffer_size - 1) {
+			if (in_buffer.size() >= buffer_size-1 ) {
 				Flit tmp = in_buffer.front();
 				int vc_id = tmp.vc_id;
 				r_interface_buffer_rd[vc_id].write(1);// always read if having flit coming
@@ -247,16 +263,16 @@ void proc_noc_interface::out_buffer_process() {
 
 	if (reset.read()) {	// if reset
 		p_buff_out_full.write(0);
+		p_vaild_out_buff.write(1);
 		// flush all data in the buffer
 		while (!out_buffer.empty()) {
 			out_buffer.pop();
 		}
 	} else {
-		if (out_buffer.size() >= buffer_size-1) {
-			p_buff_out_full.write(1);
-		}
-		else
-			p_buff_out_full.write(0);
+
+		//else
+		//p_buff_out_full.write(0);
+
 		int current_time = (int) (sc_time_stamp().to_double() / 1000);
 
 		if (p_valid_in.read() && out_buf_out_buffer_rd.read()) {
@@ -270,28 +286,55 @@ void proc_noc_interface::out_buffer_process() {
 			// write
 			if (out_buffer.size() == buffer_size) {
 				cerr << "ERROR: write to a FULL out buffer: " << name() << endl;
-				exit(-1);
+				//p_buff_out_full.write(0);
+
+				//exit(-1);
+				//p_buff_out_full.write(0);
+
 			}
 			else{
 			// Write the input flit to the buffer
 			out_buffer.push(p_flit_in.read());
+			//p_buff_out_full.write(1);
+
+
 			}
 		} else if (p_valid_in.read()) {
 			if (out_buffer.size() == buffer_size) {
 				cerr << "ERROR: write to a FULL out buffer: " << name() << endl;
-				exit(-1);
+				//p_buff_out_full.write(0);
+
+				//exit(-1);
 			}
 			else {
 				// write the input flit to the buffer
 				out_buffer.push(p_flit_in.read());
+				//p_buff_out_full.write(1);
+
 			}
+
 		} else if (out_buf_out_buffer_rd.read()) {
 			if (out_buffer.empty()) {
 				cerr << "ERROR: read from an EMPTY out buffer: " << name() << endl;				exit(-1);
 			}
 			// remove the first flit from the buffer
+			//p_buff_out_full.write(0);
 			out_buffer.pop();
+			//count_minus[0].write(1);
 		}
+		//else{
+			//p_buff_out_full.write(0);
+			//for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
+			//	count_minus[vo].write(0);
+			//}
+		//}
+		if (out_buffer.size() >= buffer_size-1) {
+			p_buff_out_full.write(1);
+		}
+		else{
+			p_buff_out_full.write(0);
+		}
+		out_buff_empty = out_buffer.empty();
 	}
 }
 

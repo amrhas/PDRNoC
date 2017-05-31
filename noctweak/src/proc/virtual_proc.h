@@ -34,7 +34,7 @@ class VirtualProc: public sc_module{
 
 	// Signal from virtual channels of the router saying that one buffer entry is available
 	sc_in <bool> out_vc_buffer_rd;
-
+	sc_in <bool>  out_buf_vaild_in;
 	// Signal to router saying that this proc want to send a flit
 	sc_out <bool> valid_out;
 
@@ -52,7 +52,7 @@ class VirtualProc: public sc_module{
     sc_signal <bool> reconf_done ;
 
 	// initialize all constants inside the processor (x,y)
-	virtual void initialize(int x, int y)=0;
+	virtual void initialize(int x, int y, EmbeddedAppHashTable* app_info=NULL)=0;
 
 	// evaluation
 	virtual ProcEvaluationFactors *evaluation()=0;

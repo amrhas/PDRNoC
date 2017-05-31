@@ -59,17 +59,17 @@ reconfig_time=(
 )
 
 size_reconfig=(
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
+# 2
+# 3
+# 4
+# 5
+# 6
+# 7
+# 8
+# 9
+# 10
+# 11
+# 12
 13
 14
 15
@@ -81,7 +81,7 @@ size_reconfig=(
 for m in ${size_reconfig[@]}; do
 for i in ${firvlues[@]}; do
 echo $i
-./noctweak -platform synthetic -dimx $m -dimy $m -fir $i -routing xy -sim 100000 -plength fixed -length 10 -bsize 2 -freq 100 >> result_100Hz_bsize2_syn_$m.txt 
+./noctweak -platform synthetic -dimx $m -dimy $m -fir $i -nvc 1 -routing xy -sim 100000 -plength fixed -length 10 -bsize $1 -freq 100 >> result_100Hz_bsize${1}_syn_$m.txt 
  #| grep "Average network"
  #| awk "/Average network|reconfig/"
 done
