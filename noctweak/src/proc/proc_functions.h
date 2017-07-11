@@ -48,4 +48,8 @@ Flit *create_head_flit_reconfig(int _src_x, int _src_y, int _dst_x, int _dst_y, 
 
 Flit *create_head_flit_fixed_reconfig(int _src_x, int _src_y, int _dst_x, int _dst_y, int _time);
 
+Flit *create_head_flit_fixed_reconfig_ack(int _src_x, int _src_y, int _dst_x, int _dst_y, int _time);
+
+
+
 #endif /* PROC_FUNCTIONS_H_ */

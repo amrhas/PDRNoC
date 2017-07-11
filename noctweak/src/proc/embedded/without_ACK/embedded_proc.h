@@ -123,11 +123,13 @@ private:
 
 	bool was_head[MAX_N_VCS];	// whether a packet head flit was received on a VC
     bool was_reconfig[MAX_N_VCS];
+    bool was_reconfig_ack[MAX_N_VCS];
     int reconfig_block_counter;
 	int injected_packet_count;
 	int received_packet_count;
 	int received_packets_count_reconfig;
 
+	sc_mutex scMut;
 	bool incremented;
 
 	bool reconfig_rc;
@@ -136,6 +138,7 @@ private:
 
 	VirtualProc* mProcIF;
 	bool reconfig_en;
+	bool reconfig_done;
 		sc_signal <bool> queue_out_valid;	// queue output before sent to LOCAL port
 	// destination info
 	int n_dsts;	// number of destinations <= MAX_N_DESTS

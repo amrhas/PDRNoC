@@ -118,7 +118,7 @@ class SyntheticProc: public VirtualProc{
 	VirtualProc* mProcIF;
 	bool reconfig_en;
 	sc_signal <bool> queue_out_valid;	// queue output before sent to LOCAL port
-
+	bool black_found;
 
 	// packet inter-injection time (cycles) with exponential distribution
 //	int inter_injection_time(double flit_rate, int type);

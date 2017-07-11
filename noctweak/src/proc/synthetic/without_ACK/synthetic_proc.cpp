@@ -48,6 +48,8 @@ void SyntheticProc::tx_process() {
 				ProcessorParameters::flit_inject_rate,
 				ProcessorParameters::inter_arrival_time_type);
 		reconfig_block_counter = 0;
+	    black_found =false;
+
 		// flush all data in the source_queue
 		while (!source_queue.empty()) {
 			source_queue.pop();
@@ -119,7 +121,7 @@ int temp=0;
 						|| (head_flit->dst_y != local_y))
 						&& GlobalVariables::reconfig_block_counter < ProcessorParameters::block_reconfig_number) {
 					int current_packet_length = ProcessorParameters::packet_length_reconfig;
-					bool black_found =false;
+				    black_found =false;
 					for(int i=0 ; i< ProcessorParameters::block_reconfig_number ;i++){
 					  if( GlobalVariables::black_oos_y[i] == head_flit->dst_y && GlobalVariables::black_oos_x[i] == head_flit->dst_x ){
 						  black_found = true;
@@ -212,7 +214,6 @@ int temp=0;
 				// create and push a packet to the source queue if the destination is different from the source
 				if ((head_flit->dst_x != local_x)
 						|| (head_flit->dst_y != local_y)) {
-					bool black_found =false;
 					for(int i=0 ; i< ProcessorParameters::block_reconfig_number ;i++){
 					  if( GlobalVariables::black_oos_y[i] == head_flit->dst_y && GlobalVariables::black_oos_x[i] == head_flit->dst_x ){
 						  black_found = true;
@@ -221,8 +222,8 @@ int temp=0;
 							 //<< head_flit->dst_y << ") reject a reconfig packet from" << local_x << local_y<< endl;
 					  }
 					}
-					if( CommonParameter::platform_type != PLATFORM_RECONFIG)
-						black_found = false;
+					//if( CommonParameter::platform_type != PLATFORM_RECONFIG)
+					//	black_found = false;
 					if(!black_found){
 					int current_packet_length;
 					if (ProcessorParameters::packet_length_type
@@ -254,6 +255,7 @@ int temp=0;
 						 temp = inter_injection_time(
 								ProcessorParameters::flit_inject_rate,
 								ProcessorParameters::inter_arrival_time_type);
+						 black_found = true;
 
 				}
 				}
@@ -278,7 +280,7 @@ int temp=0;
 			//incremented = false;
 			Flit flit_tmp = source_queue.front();
 			//cout << sc_time_stamp() << name() << "Syn current_packet_length = " << flit_tmp.packet_length << endl;
-			bool black_found =false;
+		   // black_found =false;
 			while(!black_found )
 			{
 				for(int i=0 ; i< ProcessorParameters::block_reconfig_number ;i++){

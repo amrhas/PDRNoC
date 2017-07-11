@@ -430,23 +430,27 @@ int sc_main(int argc, char *argv[]) {
 				+ EmbeddedParameters::app_filename;
 		EmbeddedAppInfo *embedded_app_info = new EmbeddedAppInfo(
 				app_filename.data());
+		int dim_x = embedded_app_info->dim_x;
+		int dim_y = embedded_app_info->dim_y;
+		int max_req_bandwidth = embedded_app_info->max_req_bandwidth;
+		EmbeddedParameters::app_info = embedded_app_info->app_info;
+		delete embedded_app_info;
+
 		string app_filename1 = "";
-		app_filename1 = app_filename + EmbeddedParameters::app_folder + "/"
+		app_filename1 = app_filename1 + EmbeddedParameters::app_folder + "/"
 						+ EmbeddedParameters::app_filename1;
 				EmbeddedAppInfo *embedded_app_info1 = new EmbeddedAppInfo(
 						app_filename1.data());
 
-		CommonParameter::dim_x = (embedded_app_info->dim_x > embedded_app_info1->dim_x ? embedded_app_info->dim_x : embedded_app_info1->dim_x );
-		CommonParameter::dim_y = (embedded_app_info->dim_y > embedded_app_info1->dim_y ? embedded_app_info->dim_y : embedded_app_info1->dim_y );
+		CommonParameter::dim_x =  ( dim_x > embedded_app_info1->dim_x ? dim_x : embedded_app_info1->dim_x );
+		CommonParameter::dim_y = (dim_y > embedded_app_info1->dim_y ? dim_y : embedded_app_info1->dim_y );
 
 		EmbeddedParameters::max_req_bandwidth =
-				(embedded_app_info->max_req_bandwidth > embedded_app_info1->max_req_bandwidth ? embedded_app_info->max_req_bandwidth : embedded_app_info1->max_req_bandwidth );
-		EmbeddedParameters::app_info = embedded_app_info->app_info;
+				( max_req_bandwidth > embedded_app_info1->max_req_bandwidth ? max_req_bandwidth : embedded_app_info1->max_req_bandwidth );
 		EmbeddedParameters::app_info1 = embedded_app_info1->app_info;
 
 		delete embedded_app_info1;
 
-		delete embedded_app_info;
 	}
 
 	if (SyntheticParameters::traffic_type == TRAFFIC_HOTSPOT) {

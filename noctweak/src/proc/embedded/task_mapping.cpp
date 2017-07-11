@@ -71,10 +71,11 @@ void TaskMapping::nmap_algorithm(AppGraph app_graph){
 		unmapped_tasks_set.insert(i);
 	}
 
-	for (int id=0; id<dim_x*dim_y; id++){
+	for (int id=1; id<dim_x*dim_y; id++){
 		unallocated_tiles_set.insert(id);
 	}
 
+	allocated_tiles_set.insert(0);
 	//------ step 1: find the task with highest weighted communication volume
 	// find the max of com_vol
 	// consider all incoming and outgoing connections of each tasks
