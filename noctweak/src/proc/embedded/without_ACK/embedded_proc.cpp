@@ -86,6 +86,7 @@ void EmbeddedProc::tx_method() {
 		mDst_y = CommonParameter::dim_y-1;
 		reconfig_rc_ack=false;
 		reconfig_rc=false;
+		black_found=false;
 		//for (int vo = 0; vo < RouterParameter::n_VCs; vo++) {
 		//	count_minus[vo].write(0);
 		//}
@@ -127,7 +128,6 @@ int reconfig_rc_active = 0;
 					reconfig_rc_active = 0;
 					queue_out_valid.write(0);
 					queue_out.write(Flit());
-					reconfig_rc=false;
 					while (!source_queue.empty()) {
 					  source_queue.pop();
 					}
@@ -140,14 +140,10 @@ int reconfig_rc_active = 0;
 					cout << local_x<< local_y<<"@ cycle " << sc_time_stamp().to_double()/CommonParameter::operating_clk_freq
 							<< ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
 
-					// push all its flits to the source_queue
-					for (int i = 0; i < 5; i++) {
-						//if(source_queue.size() < 1024){
-							source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
-							//cout << "@ cycle " << sc_time_stamp().to_double()/1000
-							//  << ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
-						//}
-					}
+
+
+					reconfig_rc=false;
+
 					//head_flit->type=0;
 					Flit * headtmp = create_head_flit_fixed_dest(local_x, local_y, 0, 0, current_time);
 
@@ -165,7 +161,14 @@ int reconfig_rc_active = 0;
 					 source_queue.push(*(packet1->flit[i]));// push value of flit to queue, not pointer
 					}
 
-
+					// push all its flits to the source_queue
+					for (int i = 0; i < 5; i++) {
+						//if(source_queue.size() < 1024){
+							source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
+							//cout << "@ cycle " << sc_time_stamp().to_double()/1000
+							//  << ": PE (" << head_flit->dst_x << ", " << head_flit->dst_y << ") injects a reconfig packet" << endl;
+						//}
+					}
 					//for (int i = 0; i < 5; i++) {
 						//source_queue.push(*(packet1->flit[i]));// push value of flit to queue, not pointer
 					//}
@@ -184,7 +187,7 @@ int reconfig_rc_active = 0;
 					head_flit = create_head_flit_fixed_reconfig(local_x, local_y, mDst_x, mDst_y,
 																				current_time);
 					//int current_packet_length = ProcessorParameters::packet_length_reconfig;
-					bool black_found =false;
+					black_found =false;
 					for(int i=0 ; i< ProcessorParameters::block_reconfig_number ;i++){
 					  if( GlobalVariables::black_oos_y[i] == head_flit->dst_y && GlobalVariables::black_oos_x[i] == head_flit->dst_x ){
 						  black_found = true;
@@ -251,13 +254,13 @@ int reconfig_rc_active = 0;
 				next_injection_time_reconfig = current_time + temp;
 			}
 		}
-if(reconfig_rc_active == 0){
+//if(reconfig_rc_active == 0){
 		for (int i = 0; i < n_dsts; i++) {
 			if (current_time >= next_injection_time[i]) {
 				head_flit = create_head_flit_fixed_dest(local_x, local_y,
 						dst_tile_loc[i].x, dst_tile_loc[i].y, current_time);
 
-				bool black_found =false;
+			    black_found =false;
 				for(int m=0 ; m< ProcessorParameters::block_reconfig_number ;m++){
 				  if( GlobalVariables::black_oos_y[m] == dst_tile_loc[i].y && GlobalVariables::black_oos_x[m] == dst_tile_loc[i].x ){
 					  black_found = true;
@@ -284,12 +287,11 @@ if(reconfig_rc_active == 0){
 
 				Packet *packet = new Packet(head_flit, current_packet_length);
 				injected_packet_count += 1;
-
-				// push all its flits to the source_queue
-				for (int j = 0; j < current_packet_length; j++) {
-						//if(source_queue.size() < 1024)
+				if((source_queue.size()+current_packet_length) < 1024)
+				  // push all its flits to the source_queue
+				  for (int j = 0; j < current_packet_length; j++) {
 					source_queue.push(*(packet->flit[j]));// push value of flit to queue, not pointer
-				}
+				  }
 				delete [] packet;
 				}
 				// schedule for next packet injection
@@ -303,14 +305,14 @@ if(reconfig_rc_active == 0){
 					temp = 1;
 				next_injection_time[i] = current_time + temp;
 			}
-}
+//}
 
 		// send one flit to its local router
 		if (source_queue.size() > 0) {
 			queue_out_valid.write(true);
 			Flit flit_tmp = source_queue.front();
 			//cout << sc_time_stamp() << name() << "Syn current_packet_length = " << flit_tmp.packet_length << endl;
-			bool black_found =false;
+		    black_found =false;
 			while(!black_found )
 			{
 				for(int i=0 ; i< ProcessorParameters::block_reconfig_number ;i++){
@@ -350,7 +352,7 @@ void EmbeddedProc::flit_out_method() {
 		flit_out.write(Flit());
 		incremented = false;
 	}
-	else if (out_vc_buffer_rd.read() != 1 ) {
+	else if (out_vc_buffer_rd.read() != 1 && !reconfig_rc ) {
 		//cout << sc_time_stamp() << name() << "Out Syn current_packet_length = " << endl;
 		incremented = true;
 		valid_out.write(queue_out_valid.read());
@@ -419,7 +421,7 @@ void EmbeddedProc::rx_method() {
 							was_reconfig[vc_id] = 0;
 						}
 						if(rx_flit.type != 3){
-							was_reconfig_ack[vc_id] = 1;
+							was_reconfig_ack[vc_id] = 0;
 						}
 
 						int tail_receiving_time = current_time;
@@ -485,7 +487,9 @@ void EmbeddedProc::rx_method() {
 						}
 						else if(was_reconfig_ack[vc_id] && (local_y ==0 && local_x ==0)){
 							//reconfig_rc = 0;
-							was_reconfig[vc_id] = 0;
+							//was_reconfig[vc_id] = 0;
+							was_reconfig_ack[vc_id] = 0;
+
 							total_latency_reconfig += packet_latency;
 							//received_packets_count_reconfig += 1;
 
@@ -497,11 +501,12 @@ void EmbeddedProc::rx_method() {
 
 						}
 						//else
-							was_reconfig[vc_id] = 0;
-							was_reconfig_ack[vc_id] = 0;
+
 					} else {
 						// no thing
 					}
+					was_reconfig[vc_id] = 0;
+					was_reconfig_ack[vc_id] = 0;
 				}
 			} else {
 				// nothing

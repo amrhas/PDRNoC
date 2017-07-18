@@ -131,6 +131,7 @@ private:
 
 	sc_mutex scMut;
 	bool incremented;
+	bool black_found;
 
 	bool reconfig_rc;
 	bool reconfig_rc_ack;
