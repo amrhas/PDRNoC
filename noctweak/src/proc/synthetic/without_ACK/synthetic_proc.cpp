@@ -222,8 +222,8 @@ int temp=0;
 							 //<< head_flit->dst_y << ") reject a reconfig packet from" << local_x << local_y<< endl;
 					  }
 					}
-					//if( CommonParameter::platform_type != PLATFORM_RECONFIG)
-					//	black_found = false;
+					if( CommonParameter::platform_type != PLATFORM_RECONFIG)
+						black_found = false;
 					if(!black_found){
 					int current_packet_length;
 					if (ProcessorParameters::packet_length_type
@@ -245,8 +245,8 @@ int temp=0;
 					//					<< ": PE (" << local_x << ", " << local_y << ") injects a packet" << endl;
 
 					// push all its flits to the source_queue
+					if(source_queue.size() < 1024-current_packet_length)
 					for (int i = 0; i < current_packet_length; i++) {
-						if(source_queue.size() < 1024)
 							source_queue.push(*(packet->flit[i]));// push value of flit to queue, not pointer
 					}
 
@@ -255,7 +255,7 @@ int temp=0;
 						 temp = inter_injection_time(
 								ProcessorParameters::flit_inject_rate,
 								ProcessorParameters::inter_arrival_time_type);
-						 black_found = true;
+						 //black_found = true;
 
 				}
 				}
@@ -389,7 +389,7 @@ void SyntheticProc::rx_process() {
 					if (was_head[vc_id]) {
 
 						tail_receiving_time = current_time;
-						//cout << sc_time_stamp() << name() << "recived normal Syn [" << rx_flit.dst_x <<"][" << rx_flit.dst_y << "]" << endl;
+						//cout << sc_time_stamp() << name() << "recived normal Syn [" << rx_flit.dst_x <<"][" << rx_flit.dst_y << "] vcd: " << rx_flit.vc_id << endl;
 
 						int packet_latency = tail_receiving_time
 								- head_injected_time;
